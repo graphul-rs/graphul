@@ -17,10 +17,10 @@ impl Context {
         None
     }
     // part of response
-    pub fn send(&self, body: &'static str) -> Response {
+    pub fn send(&self, _body: &'static str) -> Response {
         todo!()
     }
-    pub fn json(&self, body: serde_json::Value) -> Response {
+    pub fn json(&self, _body: serde_json::Value) -> Response {
         todo!()
     }
 }

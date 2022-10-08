@@ -130,7 +130,7 @@ pub struct RustFul {
 }
 
 impl RustFul {
-    pub fn resource<T: Resource + 'static>(&mut self, path: &str, res: T) {
+    pub fn resource<T: Resource + 'static>(&mut self, path: &str, _res: T) {
         // get
         self.increase_route_counter();
         self.routes = self.routes.clone().route(path, get(T::get));
