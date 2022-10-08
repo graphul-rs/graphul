@@ -2,6 +2,12 @@
 name = "rustful"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "Optimize, speed, scale your microservices and save money 💵"
+homepage = "https://github.com/rustful-rs/rustful"
+documentation = "https://github.com/rustful-rs/rustful/blob/main/README.md"
+repository = "https://github.com/rustful-rs/rustful"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -13,5 +19,3 @@ futures = "0.3.19"
 num_cpus = "1.13.1"
 async-trait = "0.1.52"
 serde_json = "1.0.79"
-#matchit = "0.5.0"
-bytes = { version = "1", features = ["serde"] }
