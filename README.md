@@ -127,6 +127,7 @@ async fn main() {
     // GROUP /api/user
     let mut user = api.group("user");
 
+    // GET POST PUT DELETE ... /api/user
     user.resource("/", Article)
 
     // GET /api/user/samuel
