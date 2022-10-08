@@ -52,6 +52,46 @@ async fn main() {
 }
 ```
 
+## Resource
+
+```rust
+use rustful::{Json, RustFul, http::{StatusCode, resource::Resource, response::Response}, Request, IntoResponse};
+use async_trait::async_trait;
+use serde_json::json;
+
+
+struct Article;
+
+#[async_trait]
+impl Resource for Article {
+
+    async fn get(_req: Request) -> Response {
+        let posts = json!({
+            "posts": ["Article 1", "Article 2", "Article ..."]
+        });
+        (StatusCode::OK, Json(posts)).into_response()
+    }
+
+    async fn post(_req: Request) -> Response {
+        (StatusCode::CREATED, "post handler").into_response()
+    }
+
+    // you can use put, delete, head, path and trace
+}
+
+
+
+#[tokio::main]
+async fn main() {
+    let mut app = RustFul::new();
+
+    app.resource("/article", Article);
+
+    app.run("127.0.0.1:8000").await;
+
+}
+```
+
 ## Groups
 
 
@@ -67,7 +107,7 @@ use serde_json::json;
 
 
 async fn index() -> &'static str {
-    "index hanlder"
+    "index handler"
 }
 
 async fn name(Path(name): Path<String>) -> impl IntoResponse {

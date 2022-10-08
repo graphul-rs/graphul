@@ -1,8 +1,8 @@
 use async_trait::async_trait;
+use axum::response::{Response, IntoResponse};
 use hyper::StatusCode;
 
-use super::context::Context;
-use super::response::Response;
+use crate::http::Request;
 
 /*
 
@@ -21,29 +21,36 @@ expected to be called millions of times a second.
 
 #[async_trait]
 pub trait Resource {
-    async fn get(&self, mut ctx: Context) -> Response {
-        ctx.response
-            .status(StatusCode::NOT_IMPLEMENTED)
-            .send("Method Not Allowed")
+
+    async fn get(_request: Request) -> Response {
+        (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
-    async fn post(&self, mut ctx: Context) -> Response {
-        ctx.response
-            .status(StatusCode::NOT_IMPLEMENTED)
-            .send("Method Not Allowed")
+
+    async fn post(_request: Request) -> Response {
+        (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
-    async fn put(&self, mut ctx: Context) -> Response {
-        ctx.response
-            .status(StatusCode::NOT_IMPLEMENTED)
-            .send("Method Not Allowed")
+
+    async fn put(_request: Request) -> Response {
+        (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
-    async fn delete(&self, mut ctx: Context) -> Response {
-        ctx.response
-            .status(StatusCode::NOT_IMPLEMENTED)
-            .send("Method Not Allowed")
+
+    async fn delete(_request: Request) -> Response {
+        (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
-    async fn path(&self, mut ctx: Context) -> Response {
-        ctx.response
-            .status(StatusCode::NOT_IMPLEMENTED)
-            .send("Method Not Allowed")
+
+    async fn patch(_request: Request) -> Response {
+        (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
+    }
+
+    async fn options(_request: Request) -> Response {
+        (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
+    }
+
+    async fn trace(_request: Request) -> Response {
+        (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
+    }
+
+    async fn head(_request: Request) -> Response {
+        (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 }

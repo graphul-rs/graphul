@@ -1,9 +1,5 @@
 use std::collections::HashMap;
 
-use http::request::Request as HttpRequest;
-use hyper::Body;
-
-pub type Request = HttpRequest<Body>;
 
 pub struct RequestBody {
     pub method: String,
@@ -14,7 +10,7 @@ pub struct RequestBody {
 }
 
 impl RequestBody {
-    pub fn new(_req: Request) -> Self {
+    pub fn new() -> Self {
         todo!()
     }
     pub fn args(&self, _name: &str) -> String {

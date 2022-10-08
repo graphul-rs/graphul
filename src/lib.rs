@@ -14,12 +14,22 @@ use axum::handler::Handler;
 pub use axum::response::IntoResponse;
 use axum::routing::{delete, get, head, options, patch, post, put, trace};
 use axum::Router;
+use http::resource::Resource;
 
 pub type Body = axum::body::Body;
+
+pub type Request = axum::http::Request<Body>;
 
 pub struct Group<'a> {
     app: &'a mut RustFul,
     prefix: String,
+}
+
+impl<'a> Group<'a> {
+    pub fn resource(&mut self, path: &str, res: impl Resource + 'static) {
+        let route_name = self.get_route_name(path);
+        self.app.resource(route_name.as_str(), res);
+    }
 }
 
 impl<'a> http::Methods for Group<'a> {
@@ -119,6 +129,42 @@ pub struct RustFul {
     count_routes: usize,
 }
 
+impl RustFul {
+    pub fn resource<T: Resource + 'static>(&mut self, path: &str, res: T) {
+        // get
+        self.increase_route_counter();
+        self.routes = self.routes.clone().route(path, get(T::get));
+
+        // post
+        self.increase_route_counter();
+        self.routes = self.routes.clone().route(path, post(T::post));
+
+        // put
+        self.increase_route_counter();
+        self.routes = self.routes.clone().route(path, put(T::put));
+
+        // delete
+        self.increase_route_counter();
+        self.routes = self.routes.clone().route(path, delete(T::delete));
+
+        // patch
+        self.increase_route_counter();
+        self.routes = self.routes.clone().route(path, patch(T::patch));
+
+        // options
+        self.increase_route_counter();
+        self.routes = self.routes.clone().route(path, options(T::options));
+
+        // trace
+        self.increase_route_counter();
+        self.routes = self.routes.clone().route(path, trace(T::trace));
+
+        // head
+        self.increase_route_counter();
+        self.routes = self.routes.clone().route(path, head(T::head));
+    }
+}
+
 impl http::Methods for RustFul {
     fn get<T, H>(&mut self, path: &str, handler: H)
     where
@@ -199,7 +245,7 @@ impl RustFul {
     }
 
     pub fn group(&mut self, name: &str) -> Group {
-        Group::new(self, format!("{}", name).as_str())
+        Group::new(self, format!("/{}", name).as_str())
     }
 
     pub async fn run(self, addr: &str) {

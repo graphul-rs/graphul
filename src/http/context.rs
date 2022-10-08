@@ -1,17 +1,12 @@
-use super::request::RequestBody;
-use super::response::{Response, ResponseBody};
+use super::response::{Response};
 
 pub struct Context {
-    pub response: ResponseBody,
-    pub request: RequestBody,
 }
 
 // get context from request, in progressss......
 impl Context {
-    pub fn new(req: RequestBody, resp: ResponseBody) -> Self {
+    pub fn new() -> Self {
         Self {
-            response: resp,
-            request: req,
         }
     }
     // part of request
@@ -23,9 +18,9 @@ impl Context {
     }
     // part of response
     pub fn send(&self, body: &'static str) -> Response {
-        self.response.send(body)
+        todo!()
     }
     pub fn json(&self, body: serde_json::Value) -> Response {
-        self.response.json(body)
+        todo!()
     }
 }
