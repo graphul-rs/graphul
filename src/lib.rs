@@ -21,7 +21,7 @@ pub type Body = axum::body::Body;
 pub type Request = axum::http::Request<Body>;
 
 pub struct Group<'a> {
-    app: &'a mut RustFul,
+    app: &'a mut Graphul,
     prefix: String,
 }
 
@@ -104,7 +104,7 @@ impl<'a> http::Methods for Group<'a> {
 }
 
 impl<'a> Group<'a> {
-    fn new(app: &'a mut RustFul, prefix: &str) -> Self {
+    fn new(app: &'a mut Graphul, prefix: &str) -> Self {
         Group {
             app: app,
             prefix: prefix.to_string()
@@ -124,12 +124,12 @@ impl<'a> Group<'a> {
     }
 }
 
-pub struct RustFul {
+pub struct Graphul {
     routes: Router<Body>,
     count_routes: usize,
 }
 
-impl RustFul {
+impl Graphul {
     pub fn resource<T: Resource + 'static>(&mut self, path: &str, _res: T) {
         // get
         self.increase_route_counter();
@@ -165,7 +165,7 @@ impl RustFul {
     }
 }
 
-impl http::Methods for RustFul {
+impl http::Methods for Graphul {
     fn get<T, H>(&mut self, path: &str, handler: H)
     where
         H: Handler<T, Body>,
@@ -232,7 +232,7 @@ impl http::Methods for RustFul {
     }
 }
 
-impl RustFul {
+impl Graphul {
     pub fn new() -> Self {
         Self {
             routes: Router::new(),

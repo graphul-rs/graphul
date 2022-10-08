@@ -1,4 +1,4 @@
-// Colors is a struct to define custom colors for Rustful app and middlewares.
+// Colors is a struct to define custom colors for Graphul app and middlewares.
 pub struct Colors {
     // Black color.
     //

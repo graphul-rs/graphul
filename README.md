@@ -6,18 +6,18 @@
 </p>
 
 <p>
-<b>Rustful</b> is an <a href="https://github.com/expressjs/express">Express</a> inspired <b>web framework</b> using a powerful extractor system built on top of <a href="https://tokio.rs/">Tokio, Tower, Axum, and Hyper</a>. Designed to improve, speed, and scale your microservices with a friendly syntax, Rustful is built with <a href="https://www.rust-lang.org/">Rust</a>. that means Rustful gets memory safety, reliability, concurrency, and performance for free. helping to save money on infrastructure.
+<b>Graphul</b> is an <a href="https://github.com/expressjs/express">Express</a> inspired <b>web framework</b> using a powerful extractor system built on top of <a href="https://tokio.rs/">Tokio, Tower, Axum, and Hyper</a>. Designed to improve, speed, and scale your microservices with a friendly syntax, Graphul is built with <a href="https://www.rust-lang.org/">Rust</a>. that means Graphul gets memory safety, reliability, concurrency, and performance for free. helping to save money on infrastructure.
 </p>
 
 ## ⚡️ Quickstart
 
 ```rust
-use rustful::{RustFul, http::Methods};
+use graphul::{Graphul, http::Methods};
 
 
 #[tokio::main]
 async fn main() {
-    let mut app = RustFul::new();
+    let mut app = Graphul::new();
 
     app.get("/", || async {
         "Hello, World 👋!"
@@ -30,13 +30,13 @@ async fn main() {
 ## JSON
 
 ```rust
-use rustful::{Json, RustFul, http::Methods};
+use graphul::{Json, Graphul, http::Methods};
 use serde_json::json;
 
 
 #[tokio::main]
 async fn main() {
-    let mut app = RustFul::new();
+    let mut app = Graphul::new();
 
     app.get("/", || async {
         Json(json!({
@@ -55,7 +55,7 @@ async fn main() {
 ## Resource
 
 ```rust
-use rustful::{Json, RustFul, http::{StatusCode, resource::Resource, response::Response}, Request, IntoResponse};
+use graphul::{Json, Graphul, http::{StatusCode, resource::Resource, response::Response}, Request, IntoResponse};
 use async_trait::async_trait;
 use serde_json::json;
 
@@ -83,7 +83,7 @@ impl Resource for Article {
 
 #[tokio::main]
 async fn main() {
-    let mut app = RustFul::new();
+    let mut app = Graphul::new();
 
     app.resource("/article", Article);
 
@@ -96,10 +96,10 @@ async fn main() {
 
 
 ```rust
-use rustful::{
+use graphul::{
     Json,
     extract::Path,
-    RustFul,
+    Graphul,
     http::{ Methods, StatusCode }
 };
 
@@ -119,7 +119,7 @@ async fn name(Path(name): Path<String>) -> impl IntoResponse {
 
 #[tokio::main]
 async fn main() {
-    let mut app = RustFul::new();
+    let mut app = Graphul::new();
 
     // GROUP /api
     let mut api = app.group("api");

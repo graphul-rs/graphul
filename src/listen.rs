@@ -48,7 +48,7 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
 	/*if app_name != "" {
 		main_logo = format!("{}{}{}{}", main_logo, " │ ", center_value(app_name), " │\n");
 	}*/
-	main_logo = format!("{}{}{}{}", main_logo, " │ ", center_value(format!("RustFul v{}", app::VERSION)), " │\n");
+	main_logo = format!("{}{}{}{}", main_logo, " │ ", center_value(format!("Graphul v{}", app::VERSION)), " │\n");
 
 	if host == "0.0.0.0" {
 		main_logo = format!("{}{}{}{}", main_logo, " │ ", center(format!("{}://127.0.0.1:{}", scheme, port)), " │\n");
