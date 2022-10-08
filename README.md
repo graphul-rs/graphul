@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://gofiber.io">
+  <a href="https://github.com/rustful-rs/rustful">
     <img alt="Fiber" height="200" src="./img/logo.png">
   </a>
   <br>
