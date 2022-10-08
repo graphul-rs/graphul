@@ -76,7 +76,7 @@ impl Resource for Article {
         (StatusCode::CREATED, "post handler").into_response()
     }
 
-    // you can use put, delete, head, path and trace
+    // you can use put, delete, head, patch and trace
 }
 
 
@@ -126,6 +126,8 @@ async fn main() {
 
     // GROUP /api/user
     let mut user = api.group("user");
+
+    user.resource("/", Article)
 
     // GET /api/user/samuel
     user.get("/:name", name);
