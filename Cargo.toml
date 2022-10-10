@@ -3,10 +3,12 @@ name = "graphul"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
+categories = ["asynchronous", "network-programming", "web-programming::http-server"]
+keywords = ["http", "web", "framework"]
 description = "Optimize, speed, scale your microservices and save money 💵"
-homepage = "https://github.com/rustful-rs/rustful"
-documentation = "https://github.com/rustful-rs/rustful/blob/main/README.md"
-repository = "https://github.com/rustful-rs/rustful"
+homepage = "https://github.com/graphul-rs/graphul"
+documentation = "https://github.com/graphul-rs/graphul/blob/main/README.md"
+repository = "https://github.com/graphul-rs/graphul"
 readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

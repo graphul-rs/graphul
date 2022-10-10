@@ -16,6 +16,8 @@ use axum::routing::{delete, get, head, options, patch, post, put, trace};
 use axum::Router;
 use http::resource::Resource;
 
+pub use http::context::Context;
+
 pub type Body = axum::body::Body;
 
 pub type Request = axum::http::Request<Body>;

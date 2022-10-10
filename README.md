@@ -27,6 +27,30 @@ async fn main() {
 }
 ```
 
+## Context
+
+```rust
+use graphul::{Graphul, Context, http::Methods };
+
+
+#[tokio::main]
+async fn main() {
+    let mut app = Graphul::new();
+
+    // /samuel?country=Colombia
+    app.get("/:name", |c: Context| async move {
+
+       let name = c.params("name");
+       let country = c.query("country");
+
+        format!("My name is {}, I'm from {}", name, country)
+    });
+
+    app.run("127.0.0.1:8000").await;
+
+}
+```
+
 ## JSON
 
 ```rust
