@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use axum::response::{Response, IntoResponse};
+use axum::response::{IntoResponse, Response};
 use hyper::StatusCode;
 
 use crate::http::Request;
@@ -21,7 +21,6 @@ expected to be called millions of times a second.
 
 #[async_trait]
 pub trait Resource {
-
     async fn get(_request: Request) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }

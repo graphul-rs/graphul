@@ -1,11 +1,12 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 use async_trait::async_trait;
-use axum::extract::{FromRequest, rejection::{QueryRejection, PathRejection}, RequestParts, Query, Path};
+use axum::extract::{
+    rejection::{PathRejection, QueryRejection},
+    FromRequest, Path, Query, RequestParts,
+};
 
 use crate::Body;
-
-
 
 type HashMapRequest = HashMap<String, String>;
 
@@ -19,7 +20,7 @@ impl Context {
     pub fn params(&self, key: &'static str) -> String {
         match self.params_map.get(key) {
             Some(value) => value.clone(),
-            None => String::new()
+            None => String::new(),
         }
     }
     pub fn all_params(&self) -> HashMapRequest {
@@ -28,7 +29,7 @@ impl Context {
     pub fn query(&self, key: &'static str) -> String {
         match self.query_map.get(key) {
             Some(value) => value.clone(),
-            None => String::new()
+            None => String::new(),
         }
     }
     pub fn all_query(&self) -> HashMapRequest {
@@ -44,30 +45,31 @@ impl FromRequest<Body> for Context {
         let mut query_map: HashMapRequest = HashMap::new();
         let mut params_map: HashMapRequest = HashMap::new();
         // get query
-        let result_query : Result<Query<HashMapRequest>, QueryRejection> = Query::from_request(req).await;
+        let result_query: Result<Query<HashMapRequest>, QueryRejection> =
+            Query::from_request(req).await;
         match result_query {
-            Ok(query) => {
-                match query {
-                     Query(parse_query) => {
-                        query_map = parse_query;
-                     }
+            Ok(query) => match query {
+                Query(parse_query) => {
+                    query_map = parse_query;
                 }
             },
             Err(_) => {}
         }
         // get params
-        let result_params : Result<Path<HashMapRequest>, PathRejection> = Path::from_request(req).await;
+        let result_params: Result<Path<HashMapRequest>, PathRejection> =
+            Path::from_request(req).await;
         match result_params {
-            Ok(params) => {
-                match params {
-                     Path(parse_params) => {
-                        params_map = parse_params;
-                     }
+            Ok(params) => match params {
+                Path(parse_params) => {
+                    params_map = parse_params;
                 }
             },
             Err(_) => {}
         }
 
-        Ok(Context { params_map: params_map, query_map: query_map })
+        Ok(Context {
+            params_map: params_map,
+            query_map: query_map,
+        })
     }
 }

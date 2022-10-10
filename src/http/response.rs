@@ -1,7 +1,5 @@
-
 pub type Response = axum::response::Response;
 pub type Value = serde_json::Value;
-
 
 #[cfg(test)]
 mod tests {

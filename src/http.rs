@@ -3,11 +3,10 @@ pub mod request;
 pub mod resource;
 pub mod response;
 
-pub use methods::Methods as Methods;
+pub use methods::Methods;
 
 use crate::Body;
 
 pub type Request = axum::http::Request<Body>;
 
 pub type StatusCode = hyper::StatusCode;
-

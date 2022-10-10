@@ -2,10 +2,10 @@
 
 //use types::*;
 
-mod color;
-mod listen;
 mod app;
+mod color;
 pub mod http;
+mod listen;
 
 use std::net::SocketAddr;
 
@@ -109,7 +109,7 @@ impl<'a> Group<'a> {
     fn new(app: &'a mut Graphul, prefix: &str) -> Self {
         Group {
             app: app,
-            prefix: prefix.to_string()
+            prefix: prefix.to_string(),
         }
     }
 
@@ -251,7 +251,6 @@ impl Graphul {
     }
 
     pub async fn run(self, addr: &str) {
-
         let addr: SocketAddr = addr.parse().unwrap();
 
         listen::startup_message(&addr, false, self.count_routes);

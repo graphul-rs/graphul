@@ -113,5 +113,4 @@ pub fn replace_default_colors(colors: &mut Colors) {
     if colors.reset == "" {
         colors.reset = DEFAULT_COLORS.reset;
     }
-
 }
