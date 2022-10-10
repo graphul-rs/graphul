@@ -1,4 +1,3 @@
-pub mod context;
 pub mod methods;
 pub mod request;
 pub mod resource;
