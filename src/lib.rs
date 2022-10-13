@@ -18,9 +18,8 @@ use axum::Router;
 pub use http::request::Context;
 use http::resource::Resource;
 
-pub type Body = axum::body::Body;
 
-pub type Request = axum::http::Request<Body>;
+pub type Body = axum::body::Body;
 
 pub struct Group<'a, S = ()> {
     app: &'a mut Graphul<S>,

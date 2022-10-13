@@ -24,38 +24,38 @@ expected to be called millions of times a second.
 #[async_trait]
 pub trait Resource<S = (), B = Body>
 where
-    B: axum::body::HttpBody + Send + 'static,
     S: Clone + Send + Sync + 'static,
+    B: Send + 'static
 {
-    async fn get(_ctx: Context<S>) -> Response {
+    async fn get(_ctx: Context<S, B>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn post(_ctx: Context<S>) -> Response {
+    async fn post(_ctx: Context<S, B>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn put(_ctx: Context<S>) -> Response {
+    async fn put(_ctx: Context<S, B>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn delete(_ctx: Context<S>) -> Response {
+    async fn delete(_ctx: Context<S, B>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn patch(_ctx: Context<S>) -> Response {
+    async fn patch(_ctx: Context<S, B>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn options(_ctx: Context<S>) -> Response {
+    async fn options(_ctx: Context<S, B>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn trace(_ctx: Context<S>) -> Response {
+    async fn trace(_ctx: Context<S, B>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn head(_ctx: Context<S>) -> Response {
+    async fn head(_ctx: Context<S, B>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 }

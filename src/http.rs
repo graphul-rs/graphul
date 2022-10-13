@@ -5,8 +5,4 @@ pub mod response;
 
 pub use methods::Methods;
 
-use crate::Body;
-
-pub type Request = axum::http::Request<Body>;
-
 pub type StatusCode = hyper::StatusCode;
