@@ -9,35 +9,41 @@ mod listen;
 
 use std::net::SocketAddr;
 
-pub use axum::extract::Json;
+pub use axum::extract;
 use axum::handler::Handler;
 pub use axum::response::IntoResponse;
 use axum::routing::{delete, get, head, options, patch, post, put, trace};
 use axum::Router;
-use http::resource::Resource;
 
 pub use http::request::Context;
+use http::resource::Resource;
 
 pub type Body = axum::body::Body;
 
 pub type Request = axum::http::Request<Body>;
 
-pub struct Group<'a> {
-    app: &'a mut Graphul,
+pub struct Group<'a, S = ()> {
+    app: &'a mut Graphul<S>,
     prefix: String,
 }
 
-impl<'a> Group<'a> {
-    pub fn resource(&mut self, path: &str, res: impl Resource + 'static) {
+impl<'a, S> Group<'a, S>
+where
+    S: Clone + Send + Sync + 'static,
+{
+    pub fn resource(&mut self, path: &str, res: impl Resource<S, Body> + 'static) {
         let route_name = self.get_route_name(path);
         self.app.resource(route_name.as_str(), res);
     }
 }
 
-impl<'a> http::Methods for Group<'a> {
+impl<'a, S> http::Methods<S, Body> for Group<'a, S>
+where
+    S: Clone + Send + Sync + 'static,
+{
     fn post<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         let route_name = self.get_route_name(path);
@@ -46,7 +52,7 @@ impl<'a> http::Methods for Group<'a> {
 
     fn get<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         let route_name = self.get_route_name(path);
@@ -54,7 +60,7 @@ impl<'a> http::Methods for Group<'a> {
     }
     fn put<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         let route_name = self.get_route_name(path);
@@ -63,7 +69,7 @@ impl<'a> http::Methods for Group<'a> {
 
     fn delete<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         let route_name = self.get_route_name(path);
@@ -71,7 +77,7 @@ impl<'a> http::Methods for Group<'a> {
     }
     fn head<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         let route_name = self.get_route_name(path);
@@ -80,7 +86,7 @@ impl<'a> http::Methods for Group<'a> {
 
     fn options<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         let route_name = self.get_route_name(path);
@@ -88,7 +94,7 @@ impl<'a> http::Methods for Group<'a> {
     }
     fn patch<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         let route_name = self.get_route_name(path);
@@ -97,7 +103,7 @@ impl<'a> http::Methods for Group<'a> {
 
     fn trace<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         let route_name = self.get_route_name(path);
@@ -105,8 +111,11 @@ impl<'a> http::Methods for Group<'a> {
     }
 }
 
-impl<'a> Group<'a> {
-    fn new(app: &'a mut Graphul, prefix: &str) -> Self {
+impl<'a, S> Group<'a, S>
+where
+    S: Clone + Send + Sync + 'static,
+{
+    fn new(app: &'a mut Graphul<S>, prefix: &str) -> Self {
         Group {
             app: app,
             prefix: prefix.to_string(),
@@ -120,19 +129,22 @@ impl<'a> Group<'a> {
         format!("{}{}", self.prefix, name)
     }
 
-    pub fn group(&mut self, name: &str) -> Group {
+    pub fn group(&mut self, name: &str) -> Group<S> {
         self.app
             .group(format!("/{}/{}", self.prefix, name).as_str())
     }
 }
 
-pub struct Graphul {
-    routes: Router<Body>,
+pub struct Graphul<S = ()> {
+    routes: Router<S, Body>,
     count_routes: usize,
 }
 
-impl Graphul {
-    pub fn resource<T: Resource + 'static>(&mut self, path: &str, _res: T) {
+impl<S> Graphul<S>
+where
+    S: Clone + Send + Sync + 'static,
+{
+    pub fn resource<T: Resource<S, Body> + 'static>(&mut self, path: &str, _res: T) {
         // get
         self.increase_route_counter();
         self.routes = self.routes.clone().route(path, get(T::get));
@@ -167,10 +179,13 @@ impl Graphul {
     }
 }
 
-impl http::Methods for Graphul {
+impl<S> http::Methods<S, Body> for Graphul<S>
+where
+    S: Clone + Send + Sync + 'static,
+{
     fn get<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         self.increase_route_counter();
@@ -178,7 +193,7 @@ impl http::Methods for Graphul {
     }
     fn post<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         self.increase_route_counter();
@@ -186,7 +201,7 @@ impl http::Methods for Graphul {
     }
     fn put<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         self.increase_route_counter();
@@ -194,7 +209,7 @@ impl http::Methods for Graphul {
     }
     fn delete<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         self.increase_route_counter();
@@ -202,7 +217,7 @@ impl http::Methods for Graphul {
     }
     fn head<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         self.increase_route_counter();
@@ -210,7 +225,7 @@ impl http::Methods for Graphul {
     }
     fn options<T, H>(&mut self, path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         self.increase_route_counter();
@@ -218,7 +233,7 @@ impl http::Methods for Graphul {
     }
     fn patch<T, H>(&mut self, _path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         self.increase_route_counter();
@@ -226,7 +241,7 @@ impl http::Methods for Graphul {
     }
     fn trace<T, H>(&mut self, _path: &str, handler: H)
     where
-        H: Handler<T, Body>,
+        H: Handler<T, S>,
         T: 'static,
     {
         self.increase_route_counter();
@@ -234,10 +249,22 @@ impl http::Methods for Graphul {
     }
 }
 
-impl Graphul {
+impl Graphul<()> {
     pub fn new() -> Self {
         Self {
             routes: Router::new(),
+            count_routes: 0,
+        }
+    }
+}
+
+impl<S> Graphul<S>
+where
+    S: Clone + Send + Sync + 'static,
+{
+    pub fn with_state(state: S) -> Self {
+        Self {
+            routes: Router::with_state(state),
             count_routes: 0,
         }
     }
@@ -246,7 +273,7 @@ impl Graphul {
         self.count_routes += 1;
     }
 
-    pub fn group(&mut self, name: &str) -> Group {
+    pub fn group(&mut self, name: &str) -> Group<S> {
         Group::new(self, format!("/{}", name).as_str())
     }
 

@@ -1,8 +1,10 @@
 use async_trait::async_trait;
-use axum::response::{IntoResponse, Response};
+use axum::{
+    response::{IntoResponse, Response},
+};
 use hyper::StatusCode;
 
-use crate::http::Request;
+use crate::{Body, Context};
 
 /*
 
@@ -20,36 +22,40 @@ expected to be called millions of times a second.
 */
 
 #[async_trait]
-pub trait Resource {
-    async fn get(_request: Request) -> Response {
+pub trait Resource<S = (), B = Body>
+where
+    B: axum::body::HttpBody + Send + 'static,
+    S: Clone + Send + Sync + 'static,
+{
+    async fn get(_ctx: Context<S>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn post(_request: Request) -> Response {
+    async fn post(_ctx: Context<S>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn put(_request: Request) -> Response {
+    async fn put(_ctx: Context<S>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn delete(_request: Request) -> Response {
+    async fn delete(_ctx: Context<S>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn patch(_request: Request) -> Response {
+    async fn patch(_ctx: Context<S>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn options(_request: Request) -> Response {
+    async fn options(_ctx: Context<S>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn trace(_request: Request) -> Response {
+    async fn trace(_ctx: Context<S>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 
-    async fn head(_request: Request) -> Response {
+    async fn head(_ctx: Context<S>) -> Response {
         (StatusCode::NOT_IMPLEMENTED, "Method Not Allowed").into_response()
     }
 }
