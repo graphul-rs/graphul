@@ -18,7 +18,6 @@ use axum::Router;
 pub use http::request::Context;
 use http::resource::Resource;
 
-
 pub type Body = axum::body::Body;
 
 pub struct Group<'a, S = ()> {
@@ -30,7 +29,7 @@ impl<'a, S> Group<'a, S>
 where
     S: Clone + Send + Sync + 'static,
 {
-    pub fn resource(&mut self, path: &str, res: impl Resource<S, Body> + 'static) {
+    pub fn resource(&mut self, path: &str, res: impl Resource<S> + 'static) {
         let route_name = self.get_route_name(path);
         self.app.resource(route_name.as_str(), res);
     }
@@ -143,7 +142,7 @@ impl<S> Graphul<S>
 where
     S: Clone + Send + Sync + 'static,
 {
-    pub fn resource<T: Resource<S, Body> + 'static>(&mut self, path: &str, _res: T) {
+    pub fn resource<T: Resource<S> + 'static>(&mut self, path: &str, _res: T) {
         // get
         self.increase_route_counter();
         self.routes = self.routes.clone().route(path, get(T::get));
@@ -261,7 +260,7 @@ impl<S> Graphul<S>
 where
     S: Clone + Send + Sync + 'static,
 {
-    pub fn with_state(state: S) -> Self {
+    pub fn share_state(state: S) -> Self {
         Self {
             routes: Router::with_state(state),
             count_routes: 0,

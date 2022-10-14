@@ -20,4 +20,7 @@ axum = { git= "https://github.com/tokio-rs/axum", version = "0.6.0-rc.2" }
 futures = "0.3.19"
 num_cpus = "1.13.1"
 async-trait = "0.1.52"
+serde_path_to_error = "0.1.8"
 serde_json = "1.0.79"
+serde = "1.0"
+serde_urlencoded = "0.7"

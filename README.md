@@ -83,6 +83,7 @@ use graphul::{Json, Graphul, http::{StatusCode, resource::Resource, response::Re
 use async_trait::async_trait;
 use serde_json::json;
 
+type ResValue = HashMap<String, String>;
 
 struct Article;
 
@@ -97,7 +98,13 @@ impl Resource for Article {
     }
 
     async fn post(_req: Request) -> Response {
-        (StatusCode::CREATED, "post handler").into_response()
+        async fn post(ctx: Context<AppState>) -> Response {
+        let value: Json<ResValue> = match ctx.payload().await {
+            Ok(data) => data,
+            Err(err) => return err.into_response(),
+        };
+
+        (StatusCode::CREATED, value).into_response()
     }
 
     // you can use put, delete, head, patch and trace
@@ -167,6 +174,75 @@ async fn main() {
     post.get("/all", || async move {
         Json(json!({"message": "hello world!"}))
     });
+
+    app.run("127.0.0.1:8000").await;
+}
+```
+
+## Share state
+
+```rust
+use graphul::{http::Methods, extract::State, Graphul};
+
+#[tokio::main]
+async fn main() {
+    #[derive(Clone)]
+    struct AppState {
+        data: String
+    }
+
+    let state = AppState { data: "Hello, World 👋!".to_string() };
+    let mut app = Graphul::share_state(state);
+
+    app.get("/", |State(state): State<AppState>| async {
+        state.data
+    }); // .middelware();
+
+    app.run("127.0.0.1:8000").await;
+}
+```
+
+## Share state with Resource
+
+```rust
+use async_trait::async_trait;
+use graphul::{
+    http::{resource::Resource, response::Response, StatusCode},
+    Context, Graphul, IntoResponse,
+};
+use serde_json::json;
+
+struct Article;
+
+#[derive(Clone)]
+struct AppState {
+    data: Vec<&str>,
+}
+
+#[async_trait]
+impl Resource<AppState> for Article {
+
+    async fn get(ctx: Context<AppState>) -> Response {
+        let article = ctx.state();
+
+        let posts = json!({
+            "posts": article.data,
+        });
+        (StatusCode::OK, ctx.json(posts)).into_response()
+    }
+
+    // you can use post, put, delete, head, patch and trace
+}
+
+#[tokio::main]
+async fn main() {
+    let state = AppState {
+        data: vec!["Article 1", "Article 2", "Article 3"],
+    };
+    let mut app = Graphul::share_state(state);
+
+    app.resource("/article", Article);
+
 
     app.run("127.0.0.1:8000").await;
 }
