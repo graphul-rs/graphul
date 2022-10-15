@@ -145,10 +145,14 @@ where
             Err(_) => {}
         }
         let mut bytes = Bytes::new();
-        let _n = body.map(|x| match x {
-            Ok(value) => bytes = value,
+        let n = body.map(|x| match x {
+            Ok(value) => {
+                bytes = value
+            },
             Err(_) => (),
         });
+        // get value from iter map
+        n.collect::<Vec<_>>().await;
         Ok(Context {
             version,
             headers,
