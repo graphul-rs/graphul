@@ -11,16 +11,16 @@ use std::convert::Infallible;
 use std::net::SocketAddr;
 
 pub use axum::extract;
-pub use axum::middleware;
 use axum::handler::Handler;
+pub use axum::middleware;
 pub use axum::response::IntoResponse;
 use axum::routing::{delete, get, head, options, patch, post, put, trace, Route};
 use axum::Router;
 
 pub use http::request::Context;
 use http::resource::Resource;
-use hyper::Request;
 use hyper::service::Service;
+use hyper::Request;
 use tower_layer::Layer;
 
 pub type Body = axum::body::Body;

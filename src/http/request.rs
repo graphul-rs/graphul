@@ -4,9 +4,14 @@ use async_trait::async_trait;
 pub use axum::http::Request;
 use axum::{
     body::{Bytes, HttpBody},
-    extract::{rejection::JsonRejection, FromRef, FromRequest, Query, Path},
-    BoxError, Json, http::Extensions,
+    extract::{
+        rejection::{JsonRejection, PathRejection, QueryRejection},
+        FromRef, FromRequest, FromRequestParts, Path, Query,
+    },
+    http::{request::Parts, Extensions},
+    BoxError, Json,
 };
+use futures::StreamExt;
 use hyper::{HeaderMap, Method, Uri, Version};
 use serde::de::DeserializeOwned;
 use serde_json::Value;
@@ -17,8 +22,8 @@ type HashMapRequest = HashMap<String, String>;
 
 #[derive(Debug)]
 pub struct Context<InnerState = ()> {
-    params_map: Option<HashMapRequest>,
-    query_map: Option<HashMapRequest>,
+    params_map: HashMapRequest,
+    query_map: HashMapRequest,
     bytes: Bytes,
     inner_state: InnerState,
     headers: HeaderMap,
@@ -53,27 +58,26 @@ impl<InnerState> Context<InnerState> {
     pub fn state(&self) -> &InnerState {
         &self.inner_state
     }
+
     async fn parse_params(&mut self) {
         todo!()
     }
-    pub fn all_params(&self) -> &Option<HashMapRequest> {
+    pub fn all_params(&self) -> &HashMapRequest {
         &self.params_map
     }
-    pub fn params(&self, _key: &'static str) -> String {
-        todo!()
-    }
-    async fn parse_query(&mut self) {
-        // get query
-        let query = self.uri.query().unwrap_or_default();
-        match serde_urlencoded::from_str(query) {
-            Ok(value) => self.query_map = Some(value),
-            Err(_) => (),
-        };
+    pub fn params(&self, key: &'static str) -> String {
+        match self.params_map.get(key) {
+            Some(value) => value.clone(),
+            None => String::new(),
+        }
     }
     pub fn query(&self, key: &'static str) -> String {
-        todo!()
+        match self.query_map.get(key) {
+            Some(value) => value.clone(),
+            None => String::new(),
+        }
     }
-    pub fn all_query(&self) -> &Option<HashMapRequest> {
+    pub fn all_query(&self) -> &HashMapRequest {
         &self.query_map
     }
 
@@ -101,18 +105,15 @@ impl<InnerState> Context<InnerState> {
 }
 
 #[async_trait]
-impl<OuterState, InnerState, B> FromRequest<OuterState, B> for Context<InnerState>
+impl<OuterState, InnerState> FromRequest<OuterState, Body> for Context<InnerState>
 where
     OuterState: Send + Sync + 'static,
     InnerState: FromRef<OuterState> + Send + Sync,
-    B: HttpBody + Send + 'static,
-    B::Data: Send,
-    B::Error: Into<BoxError>,
 {
     type Rejection = JsonRejection;
 
     async fn from_request(
-        req: axum::http::Request<B>,
+        req: axum::http::Request<Body>,
         state: &OuterState,
     ) -> Result<Self, Self::Rejection> {
         let inner_state = InnerState::from_ref(state);
@@ -120,7 +121,34 @@ where
         let method = req.method().clone();
         let uri = req.uri().clone();
         let version = req.version();
-        let bytes = Bytes::from_request(req, state).await?;
+        let (parts, body) = &mut req.into_parts();
+        let mut params_map = HashMap::new();
+        let mut query_map = HashMap::new();
+        let result_params: Result<Path<HashMapRequest>, PathRejection> =
+            Path::from_request_parts(parts, &()).await;
+        match result_params {
+            Ok(params) => match params {
+                Path(parse_params) => {
+                    params_map = parse_params;
+                }
+            },
+            Err(_) => {}
+        }
+        let result_query: Result<Query<HashMapRequest>, QueryRejection> =
+            Query::from_request_parts(parts, &()).await;
+        match result_query {
+            Ok(params) => match params {
+                Query(parse_params) => {
+                    query_map = parse_params;
+                }
+            },
+            Err(_) => {}
+        }
+        let mut bytes = Bytes::new();
+        let _n = body.map(|x| match x {
+            Ok(value) => bytes = value,
+            Err(_) => (),
+        });
         Ok(Context {
             version,
             headers,
@@ -128,8 +156,8 @@ where
             uri,
             bytes,
             inner_state,
-            params_map: None,
-            query_map: None,
+            params_map,
+            query_map,
         })
     }
 }
