@@ -4,7 +4,7 @@ use async_trait::async_trait;
 pub use axum::http::Request;
 use axum::{
     body::{Bytes, HttpBody},
-    extract::{rejection::{JsonRejection, FailedToDeserializeQueryString}, FromRef, FromRequest, Query, Path},
+    extract::{rejection::JsonRejection, FromRef, FromRequest, Query, Path},
     BoxError, Json, http::Extensions,
 };
 use hyper::{HeaderMap, Method, Uri, Version};
@@ -31,19 +31,17 @@ pub struct Context<InnerState = ()> {
 // Json
 
 impl<InnerState> Context<InnerState> {
-    async fn parse_query(&mut self) {
-        // get query
-        let query = self.uri.query().unwrap_or_default();
-        match serde_urlencoded::from_str(query) {
-            Ok(value) => self.query_map = Some(value),
-            Err(_) => (),
-        };
+    pub fn headers(&self) -> &HeaderMap {
+        &self.headers
     }
-    async fn parse_params(&mut self) {
-        todo!()
+    pub fn method(&self) -> &Method {
+        &self.method
     }
-    pub fn params(&self, _key: &'static str) -> String {
-        todo!()
+    pub fn version(&self) -> &Version {
+        &self.version
+    }
+    pub fn uri(&self) -> &Uri {
+        &self.uri
     }
 
     pub fn body(&self) -> String {
@@ -55,8 +53,22 @@ impl<InnerState> Context<InnerState> {
     pub fn state(&self) -> &InnerState {
         &self.inner_state
     }
+    async fn parse_params(&mut self) {
+        todo!()
+    }
     pub fn all_params(&self) -> &Option<HashMapRequest> {
         &self.params_map
+    }
+    pub fn params(&self, _key: &'static str) -> String {
+        todo!()
+    }
+    async fn parse_query(&mut self) {
+        // get query
+        let query = self.uri.query().unwrap_or_default();
+        match serde_urlencoded::from_str(query) {
+            Ok(value) => self.query_map = Some(value),
+            Err(_) => (),
+        };
     }
     pub fn query(&self, key: &'static str) -> String {
         todo!()

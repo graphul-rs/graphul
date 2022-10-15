@@ -216,7 +216,7 @@ struct Article;
 
 #[derive(Clone)]
 struct AppState {
-    data: Vec<&str>,
+    data: Vec<&'static str>,
 }
 
 #[async_trait]
@@ -243,6 +243,37 @@ async fn main() {
 
     app.resource("/article", Article);
 
+
+    app.run("127.0.0.1:8000").await;
+}
+```
+
+## Middleware
+
+```rust
+use graphul::{
+    Next,
+    Req,
+    middleware,
+    http::{response::Response,Methods},
+    Graphul
+};
+
+async fn my_middleware( request: Req, next: Next ) -> Response {
+
+    // your logic
+
+    next.run(request).await
+}
+
+#[tokio::main]
+async fn main() {
+    let mut app = Graphul::new();
+
+    app.get("/", || async {
+        "hello world!"
+    });
+    app.middleware(middleware::from_fn(my_middleware));
 
     app.run("127.0.0.1:8000").await;
 }

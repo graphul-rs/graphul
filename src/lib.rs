@@ -7,19 +7,26 @@ mod color;
 pub mod http;
 mod listen;
 
+use std::convert::Infallible;
 use std::net::SocketAddr;
 
 pub use axum::extract;
+pub use axum::middleware;
 use axum::handler::Handler;
 pub use axum::response::IntoResponse;
-use axum::routing::{delete, get, head, options, patch, post, put, trace};
+use axum::routing::{delete, get, head, options, patch, post, put, trace, Route};
 use axum::Router;
 
 pub use http::request::Context;
 use http::resource::Resource;
+use hyper::Request;
+use hyper::service::Service;
+use tower_layer::Layer;
 
 pub type Body = axum::body::Body;
 
+pub type Req = axum::http::Request<Body>;
+pub type Next = axum::middleware::Next<Body>;
 pub struct Group<'a, S = ()> {
     app: &'a mut Graphul<S>,
     prefix: String,
@@ -269,6 +276,17 @@ where
 
     fn increase_route_counter(&mut self) {
         self.count_routes += 1;
+    }
+
+    pub fn middleware<L>(&mut self, service: L)
+    where
+        L: Layer<Route<Body>> + Clone + Send + 'static,
+        L::Service: Service<Request<Body>> + Clone + Send + 'static,
+        <L::Service as Service<Request<Body>>>::Response: IntoResponse + 'static,
+        <L::Service as Service<Request<Body>>>::Error: Into<Infallible> + 'static,
+        <L::Service as Service<Request<Body>>>::Future: Send + 'static,
+    {
+        self.routes = self.routes.clone().route_layer(service);
     }
 
     pub fn group(&mut self, name: &str) -> Group<S> {
