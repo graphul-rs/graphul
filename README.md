@@ -40,6 +40,12 @@ async fn main() {
     // /samuel?country=Colombia
     app.get("/:name", |c: Context| async move {
 
+      /*
+         statically typed query param extraction
+         let value: Json<MyStruct> = match c.parse_params().await
+         let value: Json<MyStruct> = match c.parse_query().await
+      */
+
        let name = c.params("name");
        let country = c.query("country");
 
