@@ -6,13 +6,13 @@ mod app;
 mod color;
 pub mod http;
 mod listen;
+pub mod middleware;
 
 use std::convert::Infallible;
 use std::net::SocketAddr;
 
 pub use axum::extract;
 use axum::handler::Handler;
-pub use axum::middleware;
 pub use axum::response::IntoResponse;
 use axum::routing::{delete, get, head, options, patch, post, put, trace, Route};
 use axum::Router;
@@ -26,7 +26,6 @@ use tower_layer::Layer;
 pub type Body = axum::body::Body;
 
 pub type Req = axum::http::Request<Body>;
-pub type Next = axum::middleware::Next<Body>;
 pub struct Group<'a, S = ()> {
     app: &'a mut Graphul<S>,
     prefix: String,

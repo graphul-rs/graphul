@@ -27,7 +27,7 @@ async fn main() {
 }
 ```
 
-## Context
+## 📖 Context
 
 ```rust
 use graphul::{Graphul, Context, http::Methods };
@@ -51,10 +51,10 @@ async fn main() {
 }
 ```
 
-## JSON
+## 📖 JSON
 
 ```rust
-use graphul::{Json, Graphul, http::Methods};
+use graphul::{Graphul, http::Methods, extract::Json};
 use serde_json::json;
 
 
@@ -76,11 +76,17 @@ async fn main() {
 }
 ```
 
-## Resource
+## 📖 Resource
 
 ```rust
-use graphul::{Json, Graphul, http::{StatusCode, resource::Resource, response::Response}, Request, IntoResponse};
+use std::collections::HashMap;
+
 use async_trait::async_trait;
+use graphul::{
+    extract::Json,
+    http::{resource::Resource, response::Response, StatusCode},
+    Context, Graphul, IntoResponse,
+};
 use serde_json::json;
 
 type ResValue = HashMap<String, String>;
@@ -89,18 +95,16 @@ struct Article;
 
 #[async_trait]
 impl Resource for Article {
-
-    async fn get(_req: Request) -> Response {
+    async fn get(c: Context) -> Response {
         let posts = json!({
             "posts": ["Article 1", "Article 2", "Article ..."]
         });
-        (StatusCode::OK, Json(posts)).into_response()
+        (StatusCode::OK, c.json(posts)).into_response()
     }
 
-    async fn post(_req: Request) -> Response {
-        async fn post(ctx: Context<AppState>) -> Response {
+    async fn post(c: Context) -> Response {
         // you can use ctx.parse_params() or ctx.parse_query()
-        let value: Json<ResValue> = match ctx.payload().await {
+        let value: Json<ResValue> = match c.payload().await {
             Ok(data) => data,
             Err(err) => return err.into_response(),
         };
@@ -111,8 +115,6 @@ impl Resource for Article {
     // you can use put, delete, head, patch and trace
 }
 
-
-
 #[tokio::main]
 async fn main() {
     let mut app = Graphul::new();
@@ -120,19 +122,17 @@ async fn main() {
     app.resource("/article", Article);
 
     app.run("127.0.0.1:8000").await;
-
 }
 ```
 
-## Groups
+## 📖 Groups
 
 
 ```rust
 use graphul::{
-    Json,
-    extract::Path,
+    extract::{Path, Json},
     Graphul,
-    http::{ Methods, StatusCode }
+    http::{ Methods, StatusCode }, IntoResponse
 };
 
 use serde_json::json;
@@ -146,7 +146,7 @@ async fn name(Path(name): Path<String>) -> impl IntoResponse {
     let user = json!({
         "response": format!("my name is {}", name)
     });
-    (StatusCode::CREATED, Json(user))
+    (StatusCode::CREATED, Json(user)).into_response()
 }
 
 #[tokio::main]
@@ -160,7 +160,7 @@ async fn main() {
     let mut user = api.group("user");
 
     // GET POST PUT DELETE ... /api/user
-    user.resource("/", Article)
+    user.resource("/", Article);
 
     // GET /api/user/samuel
     user.get("/:name", name);
@@ -180,30 +180,30 @@ async fn main() {
 }
 ```
 
-## Share state
+## 📖 Share state
 
 ```rust
 use graphul::{http::Methods, extract::State, Graphul};
 
+#[derive(Clone)]
+struct AppState {
+    data: String
+}
+
 #[tokio::main]
 async fn main() {
-    #[derive(Clone)]
-    struct AppState {
-        data: String
-    }
-
     let state = AppState { data: "Hello, World 👋!".to_string() };
     let mut app = Graphul::share_state(state);
 
     app.get("/", |State(state): State<AppState>| async {
         state.data
-    }); // .middelware();
+    });
 
     app.run("127.0.0.1:8000").await;
 }
 ```
 
-## Share state with Resource
+## 📖 Share state with Resource
 
 ```rust
 use async_trait::async_trait;
@@ -249,13 +249,12 @@ async fn main() {
 }
 ```
 
-## Middleware
+## 📖 Middleware
 
 ```rust
 use graphul::{
-    Next,
     Req,
-    middleware,
+    middleware::{self, Next},
     http::{response::Response,Methods},
     Graphul
 };
