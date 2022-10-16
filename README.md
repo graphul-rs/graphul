@@ -42,8 +42,8 @@ async fn main() {
 
       /*
          statically typed query param extraction
-         let value: Json<MyStruct> = match c.parse_params().await
-         let value: Json<MyStruct> = match c.parse_query().await
+         let value: Json<MyType> = match c.parse_params().await
+         let value: Json<MyType> = match c.parse_query().await
       */
 
        let name = c.params("name");
