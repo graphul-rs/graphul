@@ -11,6 +11,8 @@ pub mod middleware;
 use std::convert::Infallible;
 use std::net::SocketAddr;
 
+pub use async_trait::async_trait;
+
 pub use axum::extract;
 use axum::handler::Handler;
 pub use axum::response::IntoResponse;

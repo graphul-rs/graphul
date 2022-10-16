@@ -87,8 +87,8 @@ async fn main() {
 ```rust
 use std::collections::HashMap;
 
-use async_trait::async_trait;
 use graphul::{
+    async_trait,
     extract::Json,
     http::{resource::Resource, response::Response, StatusCode},
     Context, Graphul, IntoResponse,
@@ -212,8 +212,8 @@ async fn main() {
 ## 📖 Share state with Resource
 
 ```rust
-use async_trait::async_trait;
 use graphul::{
+    async_trait,
     http::{resource::Resource, response::Response, StatusCode},
     Context, Graphul, IntoResponse,
 };

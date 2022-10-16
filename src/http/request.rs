@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use async_trait::async_trait;
+pub use axum::http::request::Parts;
 pub use axum::http::Request;
 use axum::{
     body::Bytes,
