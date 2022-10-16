@@ -50,7 +50,7 @@ async fn main() {
     app.run("127.0.0.1:3000").await;
 }
 
-// we can extract the connection pool with `State`
+// we can extract the connection pool with `State` or 'Context'
 async fn using_connection_pool_extractor(c: Context<PgPool>,) -> Result<String, (StatusCode, String)> {
     let pool = c.state();
     sqlx::query_scalar("select 'hello world from pg'")
