@@ -3,13 +3,12 @@ use std::collections::HashMap;
 use async_trait::async_trait;
 pub use axum::http::Request;
 use axum::{
-    body::{Bytes, HttpBody},
+    body::Bytes,
     extract::{
         rejection::{JsonRejection, PathRejection, QueryRejection},
         FromRef, FromRequest, FromRequestParts, Path, Query,
     },
-    http::{request::Parts, Extensions},
-    BoxError, Json,
+    Json,
 };
 use futures::StreamExt;
 use hyper::{HeaderMap, Method, Uri, Version};
@@ -59,8 +58,21 @@ impl<InnerState> Context<InnerState> {
         &self.inner_state
     }
 
-    async fn parse_params(&mut self) {
-        todo!()
+    pub async fn parse_params<T: DeserializeOwned>(&self) -> Result<Json<T>, JsonRejection> {
+        let value = match serde_json::to_string(&self.params_map) {
+            Ok(data) => data,
+            Err(_) => String::new(),
+        };
+        let request = Request::builder()
+            .header("Content-Type", "application/json")
+            .body(Body::from(value));
+
+        let request = match request {
+            Ok(value) => value,
+            Err(_) => Request::default(),
+        };
+
+        Json::from_request(request, &()).await
     }
     pub fn all_params(&self) -> &HashMapRequest {
         &self.params_map
@@ -70,6 +82,22 @@ impl<InnerState> Context<InnerState> {
             Some(value) => value.clone(),
             None => String::new(),
         }
+    }
+    pub async fn parse_query<T: DeserializeOwned>(&self) -> Result<Json<T>, JsonRejection> {
+        let value = match serde_json::to_string(&self.query_map) {
+            Ok(data) => data,
+            Err(_) => String::new(),
+        };
+        let request = Request::builder()
+            .header("Content-Type", "application/json")
+            .body(Body::from(value));
+
+        let request = match request {
+            Ok(value) => value,
+            Err(_) => Request::default(),
+        };
+
+        Json::from_request(request, &()).await
     }
     pub fn query(&self, key: &'static str) -> String {
         match self.query_map.get(key) {
@@ -146,9 +174,7 @@ where
         }
         let mut bytes = Bytes::new();
         let n = body.map(|x| match x {
-            Ok(value) => {
-                bytes = value
-            },
+            Ok(value) => bytes = value,
             Err(_) => (),
         });
         // get value from iter map

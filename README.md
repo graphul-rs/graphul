@@ -99,6 +99,7 @@ impl Resource for Article {
 
     async fn post(_req: Request) -> Response {
         async fn post(ctx: Context<AppState>) -> Response {
+        // you can use ctx.parse_params() or ctx.parse_query()
         let value: Json<ResValue> = match ctx.payload().await {
             Ok(data) => data,
             Err(err) => return err.into_response(),
