@@ -27,6 +27,12 @@ async fn main() {
 }
 ```
 
+## 👀 Examples
+
+Listed below are some of the common examples. If you want to see more code examples , please visit our [Recipes repository](https://github.com/graphul-rs/graphul/tree/main/examples)
+
+#
+
 ## 📖 Context
 
 ```rust
