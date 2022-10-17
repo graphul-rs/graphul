@@ -41,6 +41,7 @@ Listed below are some of the common examples. If you want to see more code examp
 - [Share state with Resource](#-share-state-with-resource)
 - [Middleware](#-middleware)
 - [Templates](#-templates)
+- ⭐️ help us by adding a star on [GitHub Star](https://github.com/graphul-rs/graphul/stargazers) to the project
 
 
 ## 📖 Context
