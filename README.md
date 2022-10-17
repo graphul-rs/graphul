@@ -331,7 +331,7 @@ async fn main() {
 
 ## License
 
-This project is licensed under the [MIT license][license].
+This project is licensed under the [MIT license](https://github.com/graphul-rs/graphul/blob/main/LICENSE).
 
 ### Contribution
 
