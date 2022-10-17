@@ -301,7 +301,7 @@ async fn main() {
 }
 ```
 
-## Templates
+## 📖 Templates
 
 ```rust
 use graphul::{
