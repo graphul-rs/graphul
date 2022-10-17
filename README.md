@@ -31,6 +31,17 @@ async fn main() {
 
 Listed below are some of the common examples. If you want to see more code examples , please visit our [Examples Folder](https://github.com/graphul-rs/graphul/tree/main/examples)
 
+## common examples
+
+- [Context](#-context)
+- [JSON](#-json)
+- [Resource](#-resource)
+- [Groups](#-groups)
+- [Share state](#-share-state)
+- [Share state with Resource](#-share-state-with-resource)
+- [Middleware](#-middleware)
+- [Templates](#-templates)
+
 
 ## 📖 Context
 
