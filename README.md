@@ -49,7 +49,6 @@ Listed below are some of the common examples. If you want to see more code examp
 ```rust
 use graphul::{Graphul, Context, http::Methods };
 
-
 #[tokio::main]
 async fn main() {
     let mut app = Graphul::new();
@@ -79,7 +78,6 @@ async fn main() {
 ```rust
 use graphul::{Graphul, http::Methods, extract::Json};
 use serde_json::json;
-
 
 #[tokio::main]
 async fn main() {
@@ -159,7 +157,6 @@ use graphul::{
 };
 
 use serde_json::json;
-
 
 async fn index() -> &'static str {
     "index handler"
