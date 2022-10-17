@@ -5,10 +5,6 @@ edition = "2021"
 publish = false
 
 [dependencies]
-#graphul = { git= "https://github.com/graphul-rs/graphul", branch = "main" }
 graphul = { path = "../../."}
 tokio = { version = "1.0", features = ["full"] }
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-
 sqlx = { version = "0.5.10", features = ["runtime-tokio-rustls", "any", "postgres"] }

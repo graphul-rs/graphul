@@ -7,6 +7,7 @@ mod color;
 pub mod http;
 mod listen;
 pub mod middleware;
+pub mod template;
 
 use std::convert::Infallible;
 use std::net::SocketAddr;

@@ -1,6 +1,6 @@
 [package]
 name = "graphul"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 license = "MIT"
 categories = ["asynchronous", "network-programming", "web-programming::http-server"]
@@ -17,6 +17,7 @@ readme = "README.md"
 hyper = { version = "0.14", features = ["full"] }
 tokio = { version = "1", features = ["full"] }
 axum = { git= "https://github.com/tokio-rs/axum", version = "0.6.0-rc.2" }
+askama = "0.11"
 futures = "0.3.19"
 num_cpus = "1.13.1"
 async-trait = "0.1.52"
