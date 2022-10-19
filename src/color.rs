@@ -1,4 +1,5 @@
 // Colors is a struct to define custom colors for Graphul app and middlewares.
+#[derive(Default)]
 pub struct Colors {
     // Black color.
     //
@@ -46,22 +47,6 @@ pub struct Colors {
     pub reset: &'static str,
 }
 
-impl Default for Colors {
-    fn default() -> Self {
-        Self {
-            black: Default::default(),
-            red: Default::default(),
-            green: Default::default(),
-            yellow: Default::default(),
-            blue: Default::default(),
-            magenta: Default::default(),
-            cyan: Default::default(),
-            white: Default::default(),
-            reset: Default::default(),
-        }
-    }
-}
-
 // Default color codes
 pub const DEFAULT_COLORS: Colors = Colors {
     black: "\x1b[90m",
@@ -78,39 +63,39 @@ pub const DEFAULT_COLORS: Colors = Colors {
 // defaultColors is a function to override default colors to config
 #[allow(dead_code)]
 pub fn replace_default_colors(colors: &mut Colors) {
-    if colors.black == "" {
+    if colors.black.is_empty() {
         colors.black = DEFAULT_COLORS.black;
     }
 
-    if colors.red == "" {
+    if colors.red.is_empty() {
         colors.red = DEFAULT_COLORS.red;
     }
 
-    if colors.green == "" {
+    if colors.green.is_empty() {
         colors.green = DEFAULT_COLORS.green;
     }
 
-    if colors.yellow == "" {
+    if colors.yellow.is_empty() {
         colors.yellow = DEFAULT_COLORS.yellow;
     }
 
-    if colors.blue == "" {
+    if colors.blue.is_empty() {
         colors.blue = DEFAULT_COLORS.blue;
     }
 
-    if colors.magenta == "" {
+    if colors.magenta.is_empty() {
         colors.magenta = DEFAULT_COLORS.magenta;
     }
 
-    if colors.cyan == "" {
+    if colors.cyan.is_empty() {
         colors.cyan = DEFAULT_COLORS.cyan;
     }
 
-    if colors.white == "" {
+    if colors.white.is_empty() {
         colors.white = DEFAULT_COLORS.white;
     }
 
-    if colors.reset == "" {
+    if colors.reset.is_empty() {
         colors.reset = DEFAULT_COLORS.reset;
     }
 }

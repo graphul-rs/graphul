@@ -124,7 +124,7 @@ where
 {
     fn new(app: &'a mut Graphul<S>, prefix: &str) -> Self {
         Group {
-            app: app,
+            app,
             prefix: prefix.to_string(),
         }
     }
@@ -262,6 +262,12 @@ impl Graphul<()> {
             routes: Router::new(),
             count_routes: 0,
         }
+    }
+}
+
+impl Default for Graphul<()> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
