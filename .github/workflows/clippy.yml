@@ -16,7 +16,7 @@ jobs:
           components: clippy
 
       - name: run cargo clippy
-        uses: actions-rs/cargo@v1
+      - uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: -- -D warnings
