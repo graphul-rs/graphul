@@ -155,29 +155,27 @@ where
         let mut query_map = HashMap::new();
         let result_params: Result<Path<HashMapRequest>, PathRejection> =
             Path::from_request_parts(parts, &()).await;
-        match result_params {
-            Ok(params) => match params {
+
+        if let Ok(params) = result_params {
+            match params {
                 Path(parse_params) => {
                     params_map = parse_params;
                 }
-            },
-            Err(_) => {}
+            }
         }
+
         let result_query: Result<Query<HashMapRequest>, QueryRejection> =
             Query::from_request_parts(parts, &()).await;
-        match result_query {
-            Ok(params) => match params {
+        if let Ok(params) = result_query { 
+            match params {
                 Query(parse_params) => {
                     query_map = parse_params;
                 }
-            },
-            Err(_) => {}
+            }
         }
+
         let mut bytes = Bytes::new();
-        let n = body.map(|x| match x {
-            Ok(value) => bytes = value,
-            Err(_) => (),
-        });
+        let n = body.map(|x| if let Ok(value) = x { bytes = value });
         // get value from iter map
         n.collect::<Vec<_>>().await;
         Ok(Context {

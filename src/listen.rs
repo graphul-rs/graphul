@@ -27,7 +27,7 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
 
     let mut host = addr.ip().to_string();
     let port = addr.port();
-    if host == "" {
+    if host.is_empty() {
         if addr.is_ipv6() {
             host = "[::1]".to_string();
         } else {
@@ -82,26 +82,16 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
 
     main_logo = format!("{}{}{}{}", main_logo, " │ ", center("".to_string()), " │\n");
     main_logo = format!(
-        "{}{}{}{}",
+        "{} │ Handlers {}  Processes {} │\n",
         main_logo,
-        " │ ",
-        format!(
-            "Handlers {}  Processes {}",
-            value(route_counter.to_string(), 14),
-            value(num_cpus::get().to_string(), 12)
-        ),
-        " │\n"
+        value(route_counter.to_string(), 14),
+        value(num_cpus::get().to_string(), 12)
     );
     main_logo = format!(
-        "{}{}{}{}",
+        "{} │ Runtime .{}  PID ....{} │\n",
         main_logo,
-        " │ ",
-        format!(
-            "Runtime .{}  PID ....{}",
-            value("Tokio".to_string(), 14),
-            value(process::id().to_string(), 14)
-        ),
-        " │\n"
+        value("Tokio".to_string(), 14),
+        value(process::id().to_string(), 14)
     );
     main_logo = format!(
         "{}{}{}",
