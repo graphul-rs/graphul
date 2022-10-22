@@ -22,6 +22,7 @@ use axum::Router;
 
 pub use http::request::Context;
 use http::resource::Resource;
+use http::StatusCode;
 use hyper::service::Service;
 use hyper::Request;
 use tower_layer::Layer;
@@ -301,13 +302,24 @@ where
         Group::new(self, format!("/{}", name).as_str())
     }
 
+    async fn fallback(req: Req) -> (StatusCode, String) {
+        (
+            StatusCode::NOT_FOUND,
+            format!("Cannot {} {}", req.method().as_str(), req.uri()),
+        )
+    }
+
     pub async fn run(self, addr: &str) {
         let addr: SocketAddr = addr.parse().unwrap();
 
         listen::startup_message(&addr, false, self.count_routes);
 
         axum::Server::bind(&addr)
-            .serve(self.routes.into_make_service())
+            .serve(
+                self.routes
+                    .fallback(Graphul::<S>::fallback)
+                    .into_make_service(),
+            )
             .await
             .unwrap();
     }

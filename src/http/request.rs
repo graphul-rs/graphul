@@ -166,7 +166,7 @@ where
 
         let result_query: Result<Query<HashMapRequest>, QueryRejection> =
             Query::from_request_parts(parts, &()).await;
-        if let Ok(params) = result_query { 
+        if let Ok(params) = result_query {
             match params {
                 Query(parse_params) => {
                     query_map = parse_params;
@@ -175,7 +175,11 @@ where
         }
 
         let mut bytes = Bytes::new();
-        let n = body.map(|x| if let Ok(value) = x { bytes = value });
+        let n = body.map(|x| {
+            if let Ok(value) = x {
+                bytes = value
+            }
+        });
         // get value from iter map
         n.collect::<Vec<_>>().await;
         Ok(Context {
