@@ -1,10 +1,6 @@
 name: Rust Security Audit
 on: [push, pull_request]
 
-defaults:
-  run:
-    working-directory: lang/rust
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
