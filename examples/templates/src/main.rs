@@ -1,8 +1,5 @@
-use graphul::{
-    http::Methods,
-    Context, Graphul, template::HtmlTemplate,
-};
 use askama::Template;
+use graphul::{http::Methods, template::HtmlTemplate, Context, Graphul};
 
 #[derive(Template)]
 #[template(path = "hello.html")]
@@ -14,8 +11,10 @@ struct HelloTemplate {
 async fn main() {
     let mut app = Graphul::new();
 
-    app.get("/:name", |c: Context| async  move {
-        let template = HelloTemplate { name: c.params("name") };
+    app.get("/:name", |c: Context| async move {
+        let template = HelloTemplate {
+            name: c.params("name"),
+        };
         HtmlTemplate(template)
     });
 

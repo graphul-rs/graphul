@@ -1,9 +1,8 @@
 mod db;
 
 use graphul::{
-    Context,
     http::{Methods, StatusCode},
-    Graphul,
+    Context, Graphul,
 };
 use sqlx::PgPool;
 
@@ -20,7 +19,7 @@ async fn main() {
 }
 
 // we can extract the connection pool with `State` or `Context`
-async fn using_connection_pool(c: Context<PgPool>,) -> Result<String, (StatusCode, String)> {
+async fn using_connection_pool(c: Context<PgPool>) -> Result<String, (StatusCode, String)> {
     let pool = c.state();
     sqlx::query_scalar("select 'hello world from pg'")
         .fetch_one(pool)

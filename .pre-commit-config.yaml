@@ -15,3 +15,17 @@ repos:
         pass_filenames: false
         types: [file, rust]
         language: system
+    -   id: cargo-check
+        name: Rust Check
+        description: Check the package for errors.
+        entry: cargo check
+        pass_filenames: false
+        types: [file, rust]
+        language: system
+    -   id: cargo-audit
+        name: Rust Security Audit
+        description: Rust Security Audit - Dependency Review
+        entry: cargo audit
+        pass_filenames: false
+        types: [file, rust]
+        language: system
