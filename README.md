@@ -165,7 +165,7 @@ async fn main() {
 }
 ```
 
-### 🌟 Custom config
+### 🌟 static files with custom config
 
 ```rust
 use graphul::{Graphul, FolderConfig, FileConfig};
