@@ -4,12 +4,14 @@
 
 mod app;
 mod color;
+mod folder;
 pub mod http;
 mod listen;
 pub mod middleware;
 pub mod template;
 
 use std::convert::Infallible;
+use std::io;
 use std::net::SocketAddr;
 
 pub use async_trait::async_trait;
@@ -17,7 +19,7 @@ pub use async_trait::async_trait;
 pub use axum::extract;
 use axum::handler::Handler;
 pub use axum::response::IntoResponse;
-use axum::routing::{delete, get, head, options, patch, post, put, trace, Route};
+use axum::routing::{delete, get, get_service, head, options, patch, post, put, trace, Route};
 use axum::Router;
 
 pub use http::request::Context;
@@ -25,7 +27,10 @@ use http::resource::Resource;
 use http::StatusCode;
 use hyper::service::Service;
 use hyper::Request;
+use tower_http::services::{ServeDir, ServeFile};
 use tower_layer::Layer;
+
+pub type FolderConfig = folder::FolderConfig;
 
 pub type Body = axum::body::Body;
 
@@ -285,6 +290,21 @@ where
 
     fn increase_route_counter(&mut self) {
         self.count_routes += 1;
+    }
+
+    pub fn static_files(&mut self, path: &'static str, dir: &'static str, config: FolderConfig) {
+        let serve_dir = ServeDir::new(dir).not_found_service(ServeFile::new(config.not_found));
+        let serve_dir = get_service(serve_dir).handle_error(Graphul::<S>::handle_error);
+        self.routes = self.routes.clone().nest_service(path, serve_dir);
+    }
+
+    pub fn static_file(&mut self, path: &'static str, file: &'static str) {
+        let serve_dir = get_service(ServeFile::new(file)).handle_error(Graphul::<S>::handle_error);
+        self.routes = self.routes.clone().nest_service(path, serve_dir);
+    }
+
+    async fn handle_error(_err: io::Error) -> impl IntoResponse {
+        (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
     }
 
     pub fn middleware<L>(&mut self, service: L)
