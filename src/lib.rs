@@ -30,7 +30,7 @@ use hyper::Request;
 use tower_http::services::{ServeDir, ServeFile};
 use tower_layer::Layer;
 
-use tower::util::ServiceExt;
+use tower::ServiceExt;
 
 pub type FolderConfig = fs::FolderConfig;
 pub type FileConfig = fs::FileConfig;
