@@ -36,6 +36,7 @@ Listed below are some of the common examples. If you want to see more code examp
 - [Context](#-context)
 - [JSON](#-json)
 - [Resource](#-resource)
+- [Static files](#-static-files)
 - [Groups](#-groups)
 - [Share state](#-share-state)
 - [Share state with Resource](#-share-state-with-resource)
@@ -141,6 +142,56 @@ async fn main() {
     let mut app = Graphul::new();
 
     app.resource("/article", Article);
+
+    app.run("127.0.0.1:8000").await;
+}
+```
+
+## 📖 Static files
+
+```rust
+use graphul::{Graphul, FolderConfig, FileConfig};
+
+#[tokio::main]
+async fn main() {
+    let mut app = Graphul::new();
+
+    // path = "/static", dir = public
+    app.static_files("/static", "public", FolderConfig::default());
+
+    app.static_file("/about", "templates/about.html", FileConfig::default());
+
+    app.run("127.0.0.1:8000").await;
+}
+```
+
+### 🌟 Custom config
+
+```rust
+use graphul::{Graphul, FolderConfig, FileConfig};
+
+#[tokio::main]
+async fn main() {
+    let mut app = Graphul::new();
+
+    app.static_files("/", "templates", FolderConfig {
+        // it support gzip, brotli and deflate
+        compress: true,
+        // Set a specific read buffer chunk size.
+        // The default capacity is 64kb.
+        chunk_size: None,
+        // If the requested path is a directory append `index.html`.
+        // This is useful for static sites.
+        index: true,
+        // fallback - This file will be called if there is no file at the path of the request.
+        not_found: Some("templates/404.html"), // or None
+    });
+
+    app.static_file("/path", "templates/about.html", FileConfig {
+        // it support gzip, brotli and deflate
+        compress: true,
+        chunk_size: Some(65536) // buffer capacity 64KiB
+    });
 
     app.run("127.0.0.1:8000").await;
 }
