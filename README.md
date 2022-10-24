@@ -304,6 +304,7 @@ impl Resource<AppState> for Article {
     }
 
     // you can use post, put, delete, head, patch and trace
+
 }
 
 #[tokio::main]
@@ -314,7 +315,6 @@ async fn main() {
     let mut app = Graphul::share_state(state);
 
     app.resource("/article", Article);
-
 
     app.run("127.0.0.1:8000").await;
 }
