@@ -28,6 +28,7 @@ use http::StatusCode;
 use hyper::service::Service;
 use hyper::Request;
 use tower_http::services::{ServeDir, ServeFile};
+use tower_http::set_status::SetStatus;
 use tower_layer::Layer;
 
 use tower::ServiceExt;
@@ -296,14 +297,54 @@ where
         self.count_routes += 1;
     }
 
-    pub fn static_files(&mut self, path: &'static str, dir: &'static str, config: FolderConfig) {
-        let mut not_found = "";
-        if let Some(not_f) = config.not_found {
-            not_found = not_f;
+    pub fn set_server_file_config(
+        &self,
+        file_dir: String,
+        compress: bool,
+        chunk_size: Option<usize>,
+    ) -> ServeFile {
+        let mut serve_file = ServeFile::new(file_dir);
+        if compress {
+            serve_file = serve_file
+                .precompressed_gzip()
+                .precompressed_deflate()
+                .precompressed_br()
         }
-        let mut serve_dir = ServeDir::new(dir)
-            .append_index_html_on_directories(config.index)
-            .not_found_service(ServeFile::new(not_found));
+        if let Some(chunk_size) = chunk_size {
+            serve_file = serve_file.with_buf_chunk_size(chunk_size)
+        }
+        serve_file
+    }
+
+    pub fn static_files(&mut self, path: &'static str, dir: &'static str, config: FolderConfig) {
+        let mut serve_dir: ServeDir<SetStatus<ServeFile>>;
+        if config.spa {
+            serve_dir = ServeDir::new(dir)
+                .append_index_html_on_directories(config.index)
+                .fallback(SetStatus::new(
+                    self.set_server_file_config(
+                        format!("{}/index.html", dir),
+                        config.compress,
+                        config.chunk_size,
+                    ),
+                    StatusCode::OK,
+                ));
+        } else {
+            let mut not_found = "";
+            if let Some(not_f) = config.not_found {
+                not_found = not_f;
+            }
+            serve_dir = ServeDir::new(dir)
+                .append_index_html_on_directories(config.index)
+                .fallback(SetStatus::new(
+                    self.set_server_file_config(
+                        not_found.to_string(),
+                        config.compress,
+                        config.chunk_size,
+                    ),
+                    StatusCode::NOT_FOUND,
+                ));
+        }
         if config.compress {
             serve_dir = serve_dir
                 .precompressed_gzip()
@@ -318,19 +359,11 @@ where
     }
 
     pub fn static_file(&mut self, path: &'static str, file: &'static str, config: FileConfig) {
+        let serve_dir =
+            self.set_server_file_config(file.to_string(), config.compress, config.chunk_size);
         self.routes = self.routes.clone().route(
             path,
             get(move |request: Request<Body>| async move {
-                let mut serve_dir = ServeFile::new(file);
-                if config.compress {
-                    serve_dir = serve_dir
-                        .precompressed_gzip()
-                        .precompressed_deflate()
-                        .precompressed_br()
-                }
-                if let Some(chunk_size) = config.chunk_size {
-                    serve_dir = serve_dir.with_buf_chunk_size(chunk_size)
-                }
                 let serve_dir = get_service(serve_dir).handle_error(Graphul::<S>::handle_error);
                 serve_dir.oneshot(request).await
             }),

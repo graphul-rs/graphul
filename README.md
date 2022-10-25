@@ -159,6 +159,9 @@ async fn main() {
     // path = "/static", dir = public
     app.static_files("/static", "public", FolderConfig::default());
 
+    // single page application
+    app.static_files("/", "app/build", FolderConfig::spa());
+
     app.static_file("/about", "templates/about.html", FileConfig::default());
 
     app.run("127.0.0.1:8000").await;
@@ -175,6 +178,8 @@ async fn main() {
     let mut app = Graphul::new();
 
     app.static_files("/", "templates", FolderConfig {
+        // single page application
+        spa: false,
         // it support gzip, brotli and deflate
         compress: true,
         // Set a specific read buffer chunk size.
