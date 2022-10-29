@@ -7,3 +7,4 @@ publish = false
 [dependencies]
 graphul = { path = "../../." }
 tokio = { version = "1.0", features = ["full"] }
+serde_json = "1.0"
