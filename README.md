@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/rustful-rs/rustful">
-    <img alt="Fiber" height="200" src="./img/logo.png">
+    <img alt="Graphul" height="200" src="./img/logo.png">
   </a>
   <br>
 </p>
