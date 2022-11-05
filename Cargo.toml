@@ -6,8 +6,8 @@ license = "MIT"
 categories = ["asynchronous", "network-programming", "web-programming::http-server"]
 keywords = ["http", "web", "framework"]
 description = "Optimize, speed, scale your microservices and save money 💵"
-homepage = "https://github.com/graphul-rs/graphul"
-documentation = "https://github.com/graphul-rs/graphul/blob/main/README.md"
+homepage = "https://graphul-rs.github.io/"
+documentation = "https://graphul-rs.github.io/"
 repository = "https://github.com/graphul-rs/graphul"
 readme = "README.md"
 
