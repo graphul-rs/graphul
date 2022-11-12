@@ -11,8 +11,6 @@ documentation = "https://graphul-rs.github.io/"
 repository = "https://github.com/graphul-rs/graphul"
 readme = "README.md"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 hyper = { version = "0.14", features = ["full"] }
 tokio = { version = "1", features = ["full"] }
