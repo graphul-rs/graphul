@@ -48,7 +48,7 @@ Listed below are some of the common examples. If you want to see more code examp
 
 more details [here](https://web-frameworks-benchmark.netlify.app/compare?f=graphul,rails,express,flask,django,laravel)
 
-<img alt="Graphul" height="600" src="./img/compare.png">
+<img alt="Graphul" width="600" src="./img/compare.png">
 
 ## 📖 Context
 
