@@ -23,6 +23,7 @@ use axum::routing::{delete, get, get_service, head, options, patch, post, put, t
 use axum::Router;
 
 pub use http::request::Context;
+pub use http::request::ContextPart;
 use http::resource::Resource;
 use http::StatusCode;
 use hyper::service::Service;

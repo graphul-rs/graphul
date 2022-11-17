@@ -194,3 +194,146 @@ where
         })
     }
 }
+
+#[derive(Debug)]
+pub struct ContextPart<InnerState = ()> {
+    params_map: HashMapRequest,
+    query_map: HashMapRequest,
+    inner_state: InnerState,
+    headers: HeaderMap,
+    method: Method,
+    uri: Uri,
+    version: Version,
+}
+
+// update context to get params and query implementar params y query genericos que no solo soporte maps si no tambien otros structs
+// Json
+
+impl<InnerState> ContextPart<InnerState> {
+    pub fn headers(&self) -> &HeaderMap {
+        &self.headers
+    }
+    pub fn method(&self) -> &Method {
+        &self.method
+    }
+    pub fn version(&self) -> &Version {
+        &self.version
+    }
+    pub fn uri(&self) -> &Uri {
+        &self.uri
+    }
+    pub fn state(&self) -> &InnerState {
+        &self.inner_state
+    }
+
+    pub async fn parse_params<T: DeserializeOwned>(&self) -> Result<Json<T>, JsonRejection> {
+        let value = match serde_json::to_string(&self.params_map) {
+            Ok(data) => data,
+            Err(_) => String::new(),
+        };
+        let request = Request::builder()
+            .header("Content-Type", "application/json")
+            .body(Body::from(value));
+
+        let request = match request {
+            Ok(value) => value,
+            Err(_) => Request::default(),
+        };
+
+        Json::from_request(request, &()).await
+    }
+    pub fn all_params(&self) -> &HashMapRequest {
+        &self.params_map
+    }
+    pub fn params(&self, key: &'static str) -> String {
+        match self.params_map.get(key) {
+            Some(value) => value.clone(),
+            None => String::new(),
+        }
+    }
+    pub async fn parse_query<T: DeserializeOwned>(&self) -> Result<Json<T>, JsonRejection> {
+        let value = match serde_json::to_string(&self.query_map) {
+            Ok(data) => data,
+            Err(_) => String::new(),
+        };
+        let request = Request::builder()
+            .header("Content-Type", "application/json")
+            .body(Body::from(value));
+
+        let request = match request {
+            Ok(value) => value,
+            Err(_) => Request::default(),
+        };
+
+        Json::from_request(request, &()).await
+    }
+    pub fn query(&self, key: &'static str) -> String {
+        match self.query_map.get(key) {
+            Some(value) => value.clone(),
+            None => String::new(),
+        }
+    }
+    pub fn all_query(&self) -> &HashMapRequest {
+        &self.query_map
+    }
+
+    pub fn json(&self, payload: Value) -> Json<Value> {
+        Json(payload)
+    }
+
+    pub fn send(value: &str) -> &str {
+        value
+    }
+}
+
+#[async_trait]
+impl<OuterState, InnerState> FromRequestParts<OuterState> for ContextPart<InnerState>
+where
+    OuterState: Send + Sync + 'static,
+    InnerState: FromRef<OuterState> + Send + Sync,
+{
+    type Rejection = JsonRejection;
+
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &OuterState,
+    ) -> Result<Self, Self::Rejection> {
+        let inner_state = InnerState::from_ref(state);
+        let headers = parts.headers.clone();
+        let method = parts.method.clone();
+        let uri = parts.uri.clone();
+        let version = parts.version;
+        let mut params_map = HashMap::new();
+        let mut query_map = HashMap::new();
+        let result_params: Result<Path<HashMapRequest>, PathRejection> =
+            Path::from_request_parts(parts, &()).await;
+
+        if let Ok(params) = result_params {
+            match params {
+                Path(parse_params) => {
+                    params_map = parse_params;
+                }
+            }
+        }
+
+        let result_query: Result<Query<HashMapRequest>, QueryRejection> =
+            Query::from_request_parts(parts, &()).await;
+        if let Ok(params) = result_query {
+            match params {
+                Query(parse_params) => {
+                    query_map = parse_params;
+                }
+            }
+        }
+
+        Ok(ContextPart {
+            version,
+            headers,
+            method,
+            uri,
+            inner_state,
+            params_map,
+            query_map,
+        })
+    }
+}
