@@ -157,6 +157,7 @@ where
 pub struct Graphul<S = ()> {
     routes: Router<S, Body>,
     count_routes: usize,
+    state: S,
 }
 
 impl<S> Graphul<S>
@@ -273,6 +274,7 @@ impl Graphul<()> {
         Self {
             routes: Router::new(),
             count_routes: 0,
+            state: (),
         }
     }
 }
@@ -289,8 +291,9 @@ where
 {
     pub fn share_state(state: S) -> Self {
         Self {
-            routes: Router::with_state(state),
+            routes: Router::new(),
             count_routes: 0,
+            state,
         }
     }
 
@@ -356,7 +359,7 @@ where
             serve_dir = serve_dir.with_buf_chunk_size(chunk_size)
         }
         let serve_dir = get_service(serve_dir).handle_error(Graphul::<S>::handle_error);
-        self.routes = self.routes.clone().nest(path, serve_dir);
+        self.routes = self.routes.clone().nest_service(path, serve_dir);
     }
 
     pub fn static_file(&mut self, path: &'static str, file: &'static str, config: FileConfig) {
@@ -405,6 +408,7 @@ where
         axum::Server::bind(&addr)
             .serve(
                 self.routes
+                    .with_state(self.state)
                     .fallback(Graphul::<S>::fallback)
                     .into_make_service(),
             )
