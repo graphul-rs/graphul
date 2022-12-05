@@ -1,4 +1,7 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    net::{IpAddr, Ipv4Addr, SocketAddr},
+};
 
 use async_trait::async_trait;
 pub use axum::http::request::Parts;
@@ -6,7 +9,8 @@ pub use axum::http::Request;
 use axum::{
     body::Bytes,
     extract::{
-        rejection::{JsonRejection, PathRejection, QueryRejection},
+        connect_info::ConnectInfo,
+        rejection::{ExtensionRejection, JsonRejection, PathRejection, QueryRejection},
         FromRef, FromRequest, FromRequestParts, Path, Query,
     },
     Json,
@@ -24,6 +28,7 @@ type HashMapRequest = HashMap<String, String>;
 pub struct Context<InnerState = ()> {
     params_map: HashMapRequest,
     query_map: HashMapRequest,
+    connect_info: Result<ConnectInfo<SocketAddr>, ExtensionRejection>,
     bytes: Bytes,
     inner_state: InnerState,
     headers: HeaderMap,
@@ -47,6 +52,17 @@ impl<InnerState> Context<InnerState> {
     }
     pub fn uri(&self) -> &Uri {
         &self.uri
+    }
+
+    pub fn addr(&self) -> SocketAddr {
+        match self.connect_info {
+            Ok(ConnectInfo(addr)) => addr,
+            Err(_) => SocketAddr::new(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), 8080),
+        }
+    }
+
+    pub fn ip(&self) -> IpAddr {
+        self.addr().ip()
     }
 
     pub fn body(&self) -> String {
@@ -156,6 +172,9 @@ where
         let result_params: Result<Path<HashMapRequest>, PathRejection> =
             Path::from_request_parts(parts, &()).await;
 
+        let connect_info: Result<ConnectInfo<SocketAddr>, ExtensionRejection> =
+            ConnectInfo::from_request_parts(parts, state).await;
+
         if let Ok(params) = result_params {
             match params {
                 Path(parse_params) => {
@@ -184,6 +203,7 @@ where
         n.collect::<Vec<_>>().await;
         Ok(Context {
             version,
+            connect_info,
             headers,
             method,
             uri,
@@ -198,6 +218,7 @@ where
 #[derive(Debug)]
 pub struct ContextPart<InnerState = ()> {
     params_map: HashMapRequest,
+    connect_info: Result<ConnectInfo<SocketAddr>, ExtensionRejection>,
     query_map: HashMapRequest,
     inner_state: InnerState,
     headers: HeaderMap,
@@ -224,6 +245,17 @@ impl<InnerState> ContextPart<InnerState> {
     }
     pub fn state(&self) -> &InnerState {
         &self.inner_state
+    }
+
+    pub fn addr(&self) -> SocketAddr {
+        match self.connect_info {
+            Ok(ConnectInfo(addr)) => addr,
+            Err(_) => SocketAddr::new(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), 8080),
+        }
+    }
+
+    pub fn ip(&self) -> IpAddr {
+        self.addr().ip()
     }
 
     pub async fn parse_params<T: DeserializeOwned>(&self) -> Result<Json<T>, JsonRejection> {
@@ -308,6 +340,9 @@ where
         let result_params: Result<Path<HashMapRequest>, PathRejection> =
             Path::from_request_parts(parts, &()).await;
 
+        let connect_info: Result<ConnectInfo<SocketAddr>, ExtensionRejection> =
+            ConnectInfo::from_request_parts(parts, state).await;
+
         if let Ok(params) = result_params {
             match params {
                 Path(parse_params) => {
@@ -328,6 +363,7 @@ where
 
         Ok(ContextPart {
             version,
+            connect_info,
             headers,
             method,
             uri,

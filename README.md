@@ -51,29 +51,30 @@ Listed below are some of the common examples. If you want to see more code examp
 ## 📖 Context
 
 ```rust
-use graphul::{Graphul, Context, http::Methods };
-
 #[tokio::main]
 async fn main() {
     let mut app = Graphul::new();
 
     // /samuel?country=Colombia
     app.get("/:name", |c: Context| async move {
+        /*
+           statically typed query param extraction
+           let value: Json<MyType> = match c.parse_params().await
+           let value: Json<MyType> = match c.parse_query().await
+        */
 
-      /*
-         statically typed query param extraction
-         let value: Json<MyType> = match c.parse_params().await
-         let value: Json<MyType> = match c.parse_query().await
-      */
+        let name = c.params("name");
+        let country = c.query("country");
 
-       let name = c.params("name");
-       let country = c.query("country");
-
-        format!("My name is {}, I'm from {}", name, country)
+        format!(
+            "My name is {}, I'm from {}, my IP is {}",
+            name,
+            country,
+            c.ip()
+        )
     });
 
     app.run("127.0.0.1:8000").await;
-
 }
 ```
 

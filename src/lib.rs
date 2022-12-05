@@ -410,7 +410,7 @@ where
                 self.routes
                     .with_state(self.state)
                     .fallback(Graphul::<S>::fallback)
-                    .into_make_service(),
+                    .into_make_service_with_connect_info::<SocketAddr>(),
             )
             .await
             .unwrap();
