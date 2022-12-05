@@ -46,11 +46,13 @@ Listed below are some of the common examples. If you want to see more code examp
 
 ## 🛫 Graphul vs most famous frameworks out there
 
-<img alt="Graphul" width="600" src="./img/compare.png">
+<img alt="Graphul" width="700" src="./img/compare.png">
 
 ## 📖 Context
 
 ```rust
+use graphul::{http::Methods, Context, Graphul};
+
 #[tokio::main]
 async fn main() {
     let mut app = Graphul::new();
@@ -65,13 +67,9 @@ async fn main() {
 
         let name = c.params("name");
         let country = c.query("country");
+        let ip = c.ip();
 
-        format!(
-            "My name is {}, I'm from {}, my IP is {}",
-            name,
-            country,
-            c.ip()
-        )
+        format!("My name is {name}, I'm from {country}, my IP is {ip}",)
     });
 
     app.run("127.0.0.1:8000").await;
