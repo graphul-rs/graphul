@@ -1,4 +1,9 @@
-use graphul::{extract::Multipart, http::response::Html, http::Methods, Graphul};
+use graphul::{
+    extract::{DefaultBodyLimit, Multipart},
+    http::response::Html,
+    http::Methods,
+    ContextPart, Graphul,
+};
 
 #[tokio::main]
 async fn main() {
@@ -6,6 +11,9 @@ async fn main() {
     let mut app = Graphul::new();
     app.get("/", show_form);
     app.post("/", accept_form);
+
+    // limit the size of the file
+    app.middleware(DefaultBodyLimit::max(250 * 1024 * 1024 /* 250mb */));
 
     app.run("0.0.0.0:3000").await;
 }
@@ -31,10 +39,16 @@ async fn show_form() -> Html<&'static str> {
     )
 }
 
-async fn accept_form(mut multipart: Multipart) {
+async fn accept_form(ctx: ContextPart, mut multipart: Multipart) {
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
-        let file_name = field.file_name().unwrap().to_string();
+
+        // POST /?name=my_new_file_name
+        let mut file_name = ctx.query("name");
+        if file_name.is_empty() {
+            file_name = field.file_name().unwrap().to_string();
+        }
+
         let content_type = field.content_type().unwrap().to_string();
         let data = field.bytes().await.unwrap();
 
