@@ -1,0 +1,12 @@
+[package]
+name = "tracing-middleware"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+graphul = { path = "../../." }
+tokio = { version = "1.0", features = ["full"] }
+tracing = "0.1.36"
+tracing-subscriber = "0.3.15"
