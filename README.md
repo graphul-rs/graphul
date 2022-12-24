@@ -329,6 +329,8 @@ async fn main() {
 
 ## 📖 Middleware
 
+- [Example using tracing](https://github.com/graphul-rs/graphul/tree/main/examples/tracing-middleware)
+
 ```rust
 use graphul::{
     Req,

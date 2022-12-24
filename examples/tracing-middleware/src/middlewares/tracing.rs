@@ -11,7 +11,6 @@ pub async fn tracing_middleware(request: Req, next: Next) -> Response {
         version = ?request.version(),
         method = request.method().to_string()
     );
-    // your logic
 
     async move {
         let now = Instant::now();
