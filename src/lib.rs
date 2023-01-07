@@ -400,6 +400,12 @@ where
         )
     }
 
+    pub fn export_routes(self) -> Router {
+        self.routes
+            .with_state(self.state)
+            .fallback(Graphul::<S>::fallback)
+    }
+
     pub async fn run(self, addr: &str) {
         let addr: SocketAddr = addr.parse().unwrap();
 
