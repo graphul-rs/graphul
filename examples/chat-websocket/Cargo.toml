@@ -1,0 +1,10 @@
+[package]
+name = "example-chat"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+graphul = { path = "../../." }
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
