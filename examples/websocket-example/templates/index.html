@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>WebSocket</title>
+    </head>
+    <body>
+        <h1>WebSocket With Graphul</h1>
+
+        <textarea id="message" style="display:block; width:600px; height:400px; box-sizing: border-box" cols="30" rows="10"></textarea>
+
+        <script>
+            const textarea = document.querySelector("#message");
+
+            const websocket = new WebSocket("ws://localhost:3000/websocket");
+
+            websocket.onopen = function() {
+                console.log("connection opened");
+                // websocket.send("test");
+            }
+
+            websocket.onclose = function() {
+                console.log("connection closed");
+            }
+
+            websocket.onmessage = function(e) {
+                console.log("received message: "+e.data);
+                textarea.value += e.data+"\r\n";
+            }
+
+        </script>
+    </body>
+</html>
