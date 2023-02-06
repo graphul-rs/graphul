@@ -277,6 +277,63 @@ impl Graphul<()> {
             state: (),
         }
     }
+
+    // new alias to create sub-routes
+    pub fn router() -> Self {
+        Self {
+            routes: Router::new(),
+            count_routes: 0,
+            state: (),
+        }
+    }
+
+    #[warn(dead_code)]
+    fn get() -> Self {
+        // v 0.6
+        todo!()
+    }
+
+    #[warn(dead_code)]
+    fn post() -> Self {
+        // v 0.6
+        todo!()
+    }
+
+    #[warn(dead_code)]
+    fn put() -> Self {
+        // v 0.6
+        todo!()
+    }
+
+    #[warn(dead_code)]
+    fn delete() -> Self {
+        // v 0.6
+        todo!()
+    }
+
+    #[warn(dead_code)]
+    fn patch() -> Self {
+        // v 0.6
+        todo!()
+    }
+
+    #[warn(dead_code)]
+    fn options() -> Self {
+        // v 0.6
+        todo!()
+    }
+
+    #[warn(dead_code)]
+    fn trace() -> Self {
+        // v 0.6
+        todo!()
+    }
+
+    #[warn(dead_code)]
+    fn head() -> Self {
+        // v 0.6
+        todo!()
+    }
 }
 
 impl Default for Graphul<()> {
@@ -299,6 +356,18 @@ where
 
     fn increase_route_counter(&mut self) {
         self.count_routes += 1;
+    }
+
+    pub fn add_router(&mut self, route: Graphul<S>) {
+        self.routes = self.routes.clone().merge(route.routes);
+        self.count_routes += route.count_routes
+    }
+
+    pub fn add_routers(&mut self, routes: Vec<Graphul<S>>) {
+        for route in routes {
+            self.routes = self.routes.clone().merge(route.routes);
+            self.count_routes += route.count_routes
+        }
     }
 
     pub fn set_server_file_config(
