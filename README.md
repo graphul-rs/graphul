@@ -9,6 +9,10 @@
 <b>Graphul</b> is an <a href="https://github.com/expressjs/express">Express</a> inspired <b>web framework</b> using a powerful extractor system. Designed to improve, speed, and scale your microservices with a friendly syntax, Graphul is built with <a href="https://www.rust-lang.org/">Rust</a>. that means Graphul gets memory safety, reliability, concurrency, and performance for free. helping to save money on infrastructure.
 </p>
 
+#
+## [Buy a Coffee ☕️](https://github.com/graphul-rs/graphul/blob/main/BUY-A-COFFEE.md)
+#
+
 ## ⚡️ Quickstart
 
 ```rust

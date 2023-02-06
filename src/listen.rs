@@ -99,5 +99,8 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
     );
 
     println!("{}", main_logo);
-    println!(" {} Buy a Coffee : {}", colors.cyan, colors.black);
+    println!(
+        "{}Support Graphul{}: https://github.com/graphul-rs/graphul/blob/main/BUY-A-COFFEE.md",
+        colors.cyan, colors.black
+    );
 }
