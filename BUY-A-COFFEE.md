@@ -21,12 +21,14 @@ You can support Graphul in two ways:
 
 No matter how you choose to support Graphul, your generosity will be greatly appreciated. Thank you for your support!
 
-<img alt="Bitcoin" height="300" src="./img/bitcoin.png">
-<img alt="Ethereum" height="300" src="./img/ethereum.png">
-<img alt="USDT" height="300" src="./img/usdt.png">
-<img alt="DogeCoin" height="300" src="./img/dogecoin.png">
-<img alt="Solana" height="300" src="./img/solana.png">
-<img alt="Shiba" height="300" src="./img/shiba.png">
-<img alt="Litecoin" height="300" src="./img/litecoin.png">
-<img alt="USDC" height="300" src="./img/usdc.png">
+<p float="left">
+    <img alt="Bitcoin" height="300" src="./img/bitcoin.png">
+    <img alt="Ethereum" height="300" src="./img/ethereum.png">
+    <img alt="USDT" height="300" src="./img/usdt.png">
+    <img alt="DogeCoin" height="300" src="./img/dogecoin.png">
+    <img alt="Solana" height="300" src="./img/solana.png">
+    <img alt="Shiba" height="300" src="./img/shiba.png">
+    <img alt="Litecoin" height="300" src="./img/litecoin.png">
+    <img alt="USDC" height="300" src="./img/usdc.png">
+</p>
 
