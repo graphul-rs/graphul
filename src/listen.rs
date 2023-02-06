@@ -99,4 +99,5 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
     );
 
     println!("{}", main_logo);
+    println!(" {} Buy a Coffee : {}", colors.cyan, colors.black);
 }

@@ -154,9 +154,11 @@ where
     }
 }
 
+#[derive(Debug)]
 pub struct Graphul<S = ()> {
     routes: Router<S, Body>,
     count_routes: usize,
+    route_list: Vec<String>,
     state: S,
 }
 
@@ -166,35 +168,35 @@ where
 {
     pub fn resource<T: Resource<S> + 'static>(&mut self, path: &str, _res: T) {
         // get
-        self.increase_route_counter();
+        self.increase_route_counter(path.into());
         self.routes = self.routes.clone().route(path, get(T::get));
 
         // post
-        self.increase_route_counter();
+        self.increase_route_counter(path.into());
         self.routes = self.routes.clone().route(path, post(T::post));
 
         // put
-        self.increase_route_counter();
+        self.increase_route_counter(path.into());
         self.routes = self.routes.clone().route(path, put(T::put));
 
         // delete
-        self.increase_route_counter();
+        self.increase_route_counter(path.into());
         self.routes = self.routes.clone().route(path, delete(T::delete));
 
         // patch
-        self.increase_route_counter();
+        self.increase_route_counter(path.into());
         self.routes = self.routes.clone().route(path, patch(T::patch));
 
         // options
-        self.increase_route_counter();
+        self.increase_route_counter(path.into());
         self.routes = self.routes.clone().route(path, options(T::options));
 
         // trace
-        self.increase_route_counter();
+        self.increase_route_counter(path.into());
         self.routes = self.routes.clone().route(path, trace(T::trace));
 
         // head
-        self.increase_route_counter();
+        self.increase_route_counter(path.into());
         self.routes = self.routes.clone().route(path, head(T::head));
     }
 }
@@ -208,7 +210,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter();
+        self.increase_route_counter(format!("GET {}", path));
         self.routes = self.routes.clone().route(path, get(handler));
     }
     fn post<T, H>(&mut self, path: &str, handler: H)
@@ -216,7 +218,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter();
+        self.increase_route_counter(format!("POST {}", path));
         self.routes = self.routes.clone().route(path, post(handler));
     }
     fn put<T, H>(&mut self, path: &str, handler: H)
@@ -224,7 +226,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter();
+        self.increase_route_counter(format!("PUT {}", path));
         self.routes = self.routes.clone().route(path, put(handler));
     }
     fn delete<T, H>(&mut self, path: &str, handler: H)
@@ -232,7 +234,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter();
+        self.increase_route_counter(format!("DELETE {}", path));
         self.routes = self.routes.clone().route(path, delete(handler));
     }
     fn head<T, H>(&mut self, path: &str, handler: H)
@@ -240,7 +242,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter();
+        self.increase_route_counter(format!("HEAD {}", path));
         self.routes = self.routes.clone().route(path, head(handler));
     }
     fn options<T, H>(&mut self, path: &str, handler: H)
@@ -248,24 +250,24 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter();
+        self.increase_route_counter(format!("OPTIONS {}", path));
         self.routes = self.routes.clone().route(path, options(handler));
     }
-    fn patch<T, H>(&mut self, _path: &str, handler: H)
+    fn patch<T, H>(&mut self, path: &str, handler: H)
     where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter();
-        self.routes = self.routes.clone().route(_path, patch(handler));
+        self.increase_route_counter(format!("PATCH {}", path));
+        self.routes = self.routes.clone().route(path, patch(handler));
     }
-    fn trace<T, H>(&mut self, _path: &str, handler: H)
+    fn trace<T, H>(&mut self, path: &str, handler: H)
     where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter();
-        self.routes = self.routes.clone().route(_path, trace(handler));
+        self.increase_route_counter(format!("TRACE {}", path));
+        self.routes = self.routes.clone().route(path, trace(handler));
     }
 }
 
@@ -274,6 +276,7 @@ impl Graphul<()> {
         Self {
             routes: Router::new(),
             count_routes: 0,
+            route_list: vec![],
             state: (),
         }
     }
@@ -283,54 +286,55 @@ impl Graphul<()> {
         Self {
             routes: Router::new(),
             count_routes: 0,
+            route_list: vec![],
             state: (),
         }
     }
 
     #[warn(dead_code)]
-    fn get() -> Self {
+    fn _get() -> Self {
         // v 0.6
         todo!()
     }
 
     #[warn(dead_code)]
-    fn post() -> Self {
+    fn _post() -> Self {
         // v 0.6
         todo!()
     }
 
     #[warn(dead_code)]
-    fn put() -> Self {
+    fn _put() -> Self {
         // v 0.6
         todo!()
     }
 
     #[warn(dead_code)]
-    fn delete() -> Self {
+    fn _delete() -> Self {
         // v 0.6
         todo!()
     }
 
     #[warn(dead_code)]
-    fn patch() -> Self {
+    fn _patch() -> Self {
         // v 0.6
         todo!()
     }
 
     #[warn(dead_code)]
-    fn options() -> Self {
+    fn _options() -> Self {
         // v 0.6
         todo!()
     }
 
     #[warn(dead_code)]
-    fn trace() -> Self {
+    fn _trace() -> Self {
         // v 0.6
         todo!()
     }
 
     #[warn(dead_code)]
-    fn head() -> Self {
+    fn _head() -> Self {
         // v 0.6
         todo!()
     }
@@ -350,23 +354,35 @@ where
         Self {
             routes: Router::new(),
             count_routes: 0,
+            route_list: vec![],
             state,
         }
     }
 
-    fn increase_route_counter(&mut self) {
+    pub fn routes(&self) -> Vec<String> {
+        self.route_list.clone()
+    }
+
+    fn increase_route_counter(&mut self, path: String) {
         self.count_routes += 1;
+        self.route_list.push(path);
+    }
+
+    fn add_route_to_list(&mut self, paths: Vec<String>) {
+        for path in paths {
+            self.increase_route_counter(path)
+        }
     }
 
     pub fn add_router(&mut self, route: Graphul<S>) {
         self.routes = self.routes.clone().merge(route.routes);
-        self.count_routes += route.count_routes
+        self.add_route_to_list(route.route_list);
     }
 
     pub fn add_routers(&mut self, routes: Vec<Graphul<S>>) {
         for route in routes {
             self.routes = self.routes.clone().merge(route.routes);
-            self.count_routes += route.count_routes
+            self.add_route_to_list(route.route_list);
         }
     }
 

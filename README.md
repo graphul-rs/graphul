@@ -41,6 +41,7 @@ Listed below are some of the common examples. If you want to see more code examp
 - [Share state](#-share-state)
 - [Share state with Resource](#-share-state-with-resource)
 - [Middleware](#-middleware)
+- [Routers](#-routers)
 - [Templates](#-templates)
 - ⭐️ help us by adding a star on [GitHub Star](https://github.com/graphul-rs/graphul/stargazers) to the project
 
@@ -354,6 +355,44 @@ async fn main() {
         "hello world!"
     });
     app.middleware(middleware::from_fn(my_middleware));
+
+    app.run("127.0.0.1:8000").await;
+}
+```
+
+## 📖 Routers
+
+- [Example Multiple Routers](https://github.com/graphul-rs/graphul/tree/main/examples/multiple-routers)
+
+```rust
+use graphul::{
+    Req,
+    middleware::{self, Next},
+    http::{response::Response,Methods},
+    Graphul
+};
+
+async fn my_router() -> Graphul {
+    let mut router = Graphul::router();
+
+    router.get("/hi", || async {
+        "Hey! :)"
+    });
+    // this middleware will be available only on this router
+    router.middleware(middleware::from_fn(my_middleware));
+
+    router
+}
+
+#[tokio::main]
+async fn main() {
+    let mut app = Graphul::new();
+
+    app.get("/", || async {
+        "hello world!"
+    });
+
+    app.add_router(my_router().await);
 
     app.run("127.0.0.1:8000").await;
 }
