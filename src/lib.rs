@@ -210,7 +210,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter(format!("GET {}", path));
+        self.increase_route_counter(format!("GET {path}"));
         self.routes = self.routes.clone().route(path, get(handler));
     }
     fn post<T, H>(&mut self, path: &str, handler: H)
@@ -218,7 +218,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter(format!("POST {}", path));
+        self.increase_route_counter(format!("POST {path}"));
         self.routes = self.routes.clone().route(path, post(handler));
     }
     fn put<T, H>(&mut self, path: &str, handler: H)
@@ -226,7 +226,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter(format!("PUT {}", path));
+        self.increase_route_counter(format!("PUT {path}"));
         self.routes = self.routes.clone().route(path, put(handler));
     }
     fn delete<T, H>(&mut self, path: &str, handler: H)
@@ -234,7 +234,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter(format!("DELETE {}", path));
+        self.increase_route_counter(format!("DELETE {path}"));
         self.routes = self.routes.clone().route(path, delete(handler));
     }
     fn head<T, H>(&mut self, path: &str, handler: H)
@@ -242,7 +242,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter(format!("HEAD {}", path));
+        self.increase_route_counter(format!("HEAD {path}"));
         self.routes = self.routes.clone().route(path, head(handler));
     }
     fn options<T, H>(&mut self, path: &str, handler: H)
@@ -250,7 +250,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter(format!("OPTIONS {}", path));
+        self.increase_route_counter(format!("OPTIONS {path}"));
         self.routes = self.routes.clone().route(path, options(handler));
     }
     fn patch<T, H>(&mut self, path: &str, handler: H)
@@ -258,7 +258,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter(format!("PATCH {}", path));
+        self.increase_route_counter(format!("PATCH {path}"));
         self.routes = self.routes.clone().route(path, patch(handler));
     }
     fn trace<T, H>(&mut self, path: &str, handler: H)
@@ -266,7 +266,7 @@ where
         H: Handler<T, S>,
         T: 'static,
     {
-        self.increase_route_counter(format!("TRACE {}", path));
+        self.increase_route_counter(format!("TRACE {path}"));
         self.routes = self.routes.clone().route(path, trace(handler));
     }
 }
@@ -412,7 +412,7 @@ where
                 .append_index_html_on_directories(config.index)
                 .fallback(SetStatus::new(
                     self.set_server_file_config(
-                        format!("{}/index.html", dir),
+                        format!("{dir}/index.html"),
                         config.compress,
                         config.chunk_size,
                     ),
@@ -475,7 +475,7 @@ where
     }
 
     pub fn group(&mut self, name: &str) -> Group<S> {
-        Group::new(self, format!("/{}", name).as_str())
+        Group::new(self, format!("/{name}").as_str())
     }
 
     async fn fallback(req: Req) -> (StatusCode, String) {

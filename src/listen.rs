@@ -20,7 +20,7 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
         string
     };
 
-    let center = |s: String| -> String { format!("{:^49}", s) };
+    let center = |s: String| -> String { format!("{s:^49}") };
 
     let center_value =
         |s: String| -> String { format!("{}{:^49}{}", colors.cyan, s, colors.black) };
@@ -60,14 +60,14 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
             "{}{}{}{}",
             main_logo,
             " │ ",
-            center(format!("{}://127.0.0.1:{}", scheme, port)),
+            center(format!("{scheme}://127.0.0.1:{port}")),
             " │\n"
         );
         main_logo = format!(
             "{}{}{}{}",
             main_logo,
             " │ ",
-            center(format!("(bound on host 0.0.0.0 and port {})", port)),
+            center(format!("(bound on host 0.0.0.0 and port {port})")),
             " │\n"
         );
     } else {
@@ -75,7 +75,7 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
             "{}{}{}{}",
             main_logo,
             " │ ",
-            center(format!("{}://{}:{}", scheme, host, port)),
+            center(format!("{scheme}://{host}:{port}")),
             " │\n"
         );
     }
@@ -98,7 +98,7 @@ pub fn startup_message(addr: &SocketAddr, tls: bool, route_counter: usize) {
         main_logo, " └───────────────────────────────────────────────────┘", colors.reset
     );
 
-    println!("{}", main_logo);
+    println!("{main_logo}");
     println!(
         "{}Support Graphul{}: https://github.com/graphul-rs/graphul/blob/main/BUY-A-COFFEE.md",
         colors.cyan, colors.black

@@ -10,7 +10,7 @@
 </p>
 
 
-## [Buy a Coffee ☕️](https://github.com/graphul-rs/graphul/blob/main/BUY-A-COFFEE.md)
+## [Buy a Coffee with Bitcoin ☕️](https://github.com/graphul-rs/graphul/blob/main/BUY-A-COFFEE.md)
 
 
 ## ⚡️ Quickstart
