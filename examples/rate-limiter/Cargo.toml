@@ -1,0 +1,9 @@
+[package]
+name = "rate-limiter"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+graphul = { path = "../../." }
+tokio = { version = "1.0", features = ["full"] }
