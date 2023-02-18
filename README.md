@@ -47,6 +47,7 @@ Listed below are some of the common examples. If you want to see more code examp
 - [Middleware](#-middleware)
 - [Routers](#-routers)
 - [Templates](#-templates)
+- [Swagger - OpenAPI](https://github.com/graphul-rs/graphul/tree/main/examples/utoipa-swagger-ui)
 - ⭐️ help us by adding a star on [GitHub Star](https://github.com/graphul-rs/graphul/stargazers) to the project
 
 ## 🛫 Graphul vs most famous frameworks out there
