@@ -2,8 +2,8 @@ use std::sync::Arc;
 
 use crate::swagger::{Todo, TodoError};
 use graphul::{
-    extract::{Json, Path, Query, State},
-    IntoResponse,
+    extract::{Json, Path, Query},
+    Context, ContextPart, IntoResponse,
 };
 use hyper::{HeaderMap, StatusCode};
 use serde::Deserialize;
@@ -23,8 +23,8 @@ pub type Store = Mutex<Vec<Todo>>;
         (status = 200, description = "List all todos successfully", body = [Todo])
     )
 )]
-pub async fn list_todos(State(store): State<Arc<Store>>) -> Json<Vec<Todo>> {
-    let todos = store.lock().await.clone();
+pub async fn list_todos(ctx: Context<Arc<Store>>) -> Json<Vec<Todo>> {
+    let todos = ctx.state().lock().await.clone();
 
     Json(todos)
 }
@@ -52,11 +52,11 @@ pub struct TodoSearchQuery {
     )
 )]
 pub async fn search_todos(
-    State(store): State<Arc<Store>>,
     query: Query<TodoSearchQuery>,
+    ctx: Context<Arc<Store>>,
 ) -> Json<Vec<Todo>> {
     Json(
-        store
+        ctx.state()
             .lock()
             .await
             .iter()
@@ -81,10 +81,10 @@ pub async fn search_todos(
     )
 )]
 pub async fn create_todo(
-    State(store): State<Arc<Store>>,
+    ctx: ContextPart<Arc<Store>>,
     Json(todo): Json<Todo>,
 ) -> impl IntoResponse {
-    let mut todos = store.lock().await;
+    let mut todos = ctx.state().lock().await;
 
     todos
         .iter_mut()
@@ -126,15 +126,15 @@ pub async fn create_todo(
 )]
 pub async fn mark_done(
     Path(id): Path<i32>,
-    State(store): State<Arc<Store>>,
     headers: HeaderMap,
+    ctx: Context<Arc<Store>>,
 ) -> StatusCode {
     match check_api_key(false, headers) {
         Ok(_) => (),
         Err(_) => return StatusCode::UNAUTHORIZED,
     }
 
-    let mut todos = store.lock().await;
+    let mut todos = ctx.state().lock().await;
 
     todos
         .iter_mut()
@@ -166,15 +166,15 @@ pub async fn mark_done(
 )]
 pub async fn delete_todo(
     Path(id): Path<i32>,
-    State(store): State<Arc<Store>>,
     headers: HeaderMap,
+    ctx: Context<Arc<Store>>,
 ) -> impl IntoResponse {
     match check_api_key(true, headers) {
         Ok(_) => (),
         Err(error) => return error.into_response(),
     }
 
-    let mut todos = store.lock().await;
+    let mut todos = ctx.state().lock().await;
 
     let len = todos.len();
 
