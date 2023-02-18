@@ -374,14 +374,21 @@ where
         }
     }
 
+    pub fn merge<R>(&mut self, route: R)
+    where
+        R: Into<Router<S, Body>>,
+    {
+        self.routes = self.routes.clone().merge(route);
+    }
+
     pub fn add_router(&mut self, route: Graphul<S>) {
-        self.routes = self.routes.clone().merge(route.routes);
+        self.merge(route.routes);
         self.add_route_to_list(route.route_list);
     }
 
     pub fn add_routers(&mut self, routes: Vec<Graphul<S>>) {
         for route in routes {
-            self.routes = self.routes.clone().merge(route.routes);
+            self.merge(route.routes);
             self.add_route_to_list(route.route_list);
         }
     }
