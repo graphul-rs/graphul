@@ -1,39 +1,17 @@
 use std::sync::Arc;
 
+use crate::swagger::{Todo, TodoError};
 use graphul::{
     extract::{Json, Path, Query, State},
     IntoResponse,
 };
 use hyper::{HeaderMap, StatusCode};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use tokio::sync::Mutex;
-use utoipa::{IntoParams, ToSchema};
+use utoipa::IntoParams;
 
 /// In-memory todo store
 pub type Store = Mutex<Vec<Todo>>;
-
-/// Item to do.
-#[derive(Serialize, Deserialize, ToSchema, Clone)]
-pub struct Todo {
-    id: i32,
-    #[schema(example = "Buy groceries")]
-    value: String,
-    done: bool,
-}
-
-/// Todo operation errors
-#[derive(Serialize, Deserialize, ToSchema)]
-pub enum TodoError {
-    /// Todo already exists conflict.
-    #[schema(example = "Todo already exists")]
-    Conflict(String),
-    /// Todo not found by id.
-    #[schema(example = "id = 1")]
-    NotFound(String),
-    /// Todo operation unauthorized
-    #[schema(example = "missing api key")]
-    Unauthorized(String),
-}
 
 /// List all Todo items
 ///

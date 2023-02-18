@@ -42,10 +42,10 @@ pub struct ApiDoc;
 
 #[derive(Serialize, Deserialize, ToSchema, Clone)]
 pub struct Todo {
-    id: i32,
+    pub id: i32,
     #[schema(example = "Buy groceries")]
-    value: String,
-    done: bool,
+    pub value: String,
+    pub done: bool,
 }
 
 /// Todo operation errors
