@@ -1,4 +1,7 @@
+mod rate_limit_layer;
+
 use crate::Body;
+
 
 pub use axum::middleware::{self, from_fn, from_fn_with_state};
 
@@ -12,15 +15,16 @@ pub mod limit {
     use ::tower::limit::{
         ConcurrencyLimitLayer as OriginalConcurrencyLimitLayer,
         GlobalConcurrencyLimitLayer as OriginalGlobalConcurrencyLimitLayer,
-        RateLimitLayer as OriginalRateLimitLayer,
     };
     use tower_http::add_extension::{AddExtension, AddExtensionLayer};
+
+    use super::rate_limit_layer::RateLimitLayer as InHouseRateLimitLayer;
 
     /// Wrapper of RateLimitLayer of tower
     /// Enforces a rate limit on the number of requests the underlying
     /// service can handle over a period of time.
     #[derive(Debug, Clone)]
-    pub struct RateLimitLayer(AddExtensionLayer<OriginalRateLimitLayer>);
+    pub struct RateLimitLayer(AddExtensionLayer<InHouseRateLimitLayer>);
     /// Wrapper of ConcurrencyLimitLayer of tower
     /// Enforces a limit on the concurrent number of requests the underlying
     /// service can handle.
@@ -41,14 +45,12 @@ pub mod limit {
     impl RateLimitLayer {
         /// Create new rate limit layer.
         pub fn new(limit: u64, per: Duration) -> Self {
-            Self(AddExtensionLayer::new(OriginalRateLimitLayer::new(
-                limit, per,
-            )))
+            Self(AddExtensionLayer::new(InHouseRateLimitLayer::new()))
         }
     }
 
     impl<S> tower_layer::Layer<S> for RateLimitLayer {
-        type Service = AddExtension<S, OriginalRateLimitLayer>;
+        type Service = AddExtension<S, InHouseRateLimitLayer>;
         fn layer(&self, service: S) -> Self::Service {
             self.0.layer(service)
         }

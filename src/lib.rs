@@ -478,7 +478,7 @@ where
         <L::Service as Service<Request<Body>>>::Error: Into<Infallible> + 'static,
         <L::Service as Service<Request<Body>>>::Future: Send + 'static,
     {
-        self.routes = self.routes.clone().route_layer(service);
+        self.routes = self.routes.clone().layer(service);
     }
 
     pub fn group(&mut self, name: &str) -> Group<S> {

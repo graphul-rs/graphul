@@ -7,3 +7,4 @@ publish = false
 [dependencies]
 graphul = { path = "../../." }
 tokio = { version = "1.0", features = ["full"] }
+tracing-subscriber = "0.3.16"
