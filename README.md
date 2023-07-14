@@ -12,7 +12,7 @@
 
 ## [Buy a Coffee with Bitcoin ☕️](https://github.com/graphul-rs/graphul/blob/main/BUY-A-COFFEE.md)
 
-[![Discord](https://img.shields.io/discord/1096163462767444130?label=Discord)](https://discord.gg/EH5CBjfB)
+[![Discord](https://img.shields.io/discord/1096163462767444130?label=Discord)](https://discord.gg/3WCMgT3KCS)
 Join our Discord server to chat with others in the Graphul community!
 
 ## ⚡️ Quickstart
