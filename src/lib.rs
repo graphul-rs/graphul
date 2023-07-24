@@ -291,52 +291,237 @@ impl Graphul<()> {
         }
     }
 
-    #[warn(dead_code)]
-    fn _get() -> Self {
-        // v 0.6
-        todo!()
+    // Graphul::get("/", || async {});
+    // let
+
+    fn get<T, H>(path: &str, handler: H) -> Graphul
+    where
+        H: Handler<T, ()>,
+        T: 'static,
+    {
+        use http::Methods;
+
+        let mut app = Graphul::new();
+        app.get(path, handler);
+        app
     }
 
-    #[warn(dead_code)]
-    fn _post() -> Self {
-        // v 0.6
-        todo!()
+    // Get with state
+    // Graphul::Get(my_state, "/", || async {});
+    fn Get<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    where
+        H: Handler<T, S>,
+        T: 'static,
+        S: Clone + Send + Sync + 'static,
+    {
+        use http::Methods;
+
+        let mut app: Graphul<S> = Graphul::share_state(state);
+        app.get(path, handler);
+        app
     }
 
-    #[warn(dead_code)]
-    fn _put() -> Self {
-        // v 0.6
-        todo!()
+    // Post without state
+    // Graphul::post("/", || async {});
+    fn post<T, H>(path: &str, handler: H) -> Graphul
+    where
+        H: Handler<T, ()>,
+        T: 'static,
+    {
+        use http::Methods;
+
+        let mut app = Graphul::new();
+        app.post(path, handler);
+        app
     }
 
-    #[warn(dead_code)]
-    fn _delete() -> Self {
-        // v 0.6
-        todo!()
+    // Post with state
+    // Graphul::Post(my_state, "/", || async {});
+    fn Post<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    where
+        H: Handler<T, S>,
+        T: 'static,
+        S: Clone + Send + Sync + 'static,
+    {
+        use http::Methods;
+
+        let mut app: Graphul<S> = Graphul::share_state(state);
+        app.post(path, handler);
+        app
     }
 
-    #[warn(dead_code)]
-    fn _patch() -> Self {
-        // v 0.6
-        todo!()
+    // Put without state
+    // Graphul::put("/", || async {});
+    fn put<T, H>(path: &str, handler: H) -> Graphul
+    where
+        H: Handler<T, ()>,
+        T: 'static,
+    {
+        use http::Methods;
+
+        let mut app = Graphul::new();
+        app.put(path, handler);
+        app
     }
 
-    #[warn(dead_code)]
-    fn _options() -> Self {
-        // v 0.6
-        todo!()
+    // Put with state
+    // Graphul::Put(my_state, "/", || async {});
+    fn Put<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    where
+        H: Handler<T, S>,
+        T: 'static,
+        S: Clone + Send + Sync + 'static,
+    {
+        use http::Methods;
+
+        let mut app: Graphul<S> = Graphul::share_state(state);
+        app.put(path, handler);
+        app
     }
 
-    #[warn(dead_code)]
-    fn _trace() -> Self {
-        // v 0.6
-        todo!()
+    // Delete without state
+    // Graphul::delete("/", || async {});
+    fn delete<T, H>(path: &str, handler: H) -> Graphul
+    where
+        H: Handler<T, ()>,
+        T: 'static,
+    {
+        use http::Methods;
+
+        let mut app = Graphul::new();
+        app.delete(path, handler);
+        app
     }
 
-    #[warn(dead_code)]
-    fn _head() -> Self {
-        // v 0.6
-        todo!()
+    // Delete with state
+    // Graphul::Delete(my_state, "/", || async {});
+    fn Delete<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    where
+        H: Handler<T, S>,
+        T: 'static,
+        S: Clone + Send + Sync + 'static,
+    {
+        use http::Methods;
+
+        let mut app: Graphul<S> = Graphul::share_state(state);
+        app.delete(path, handler);
+        app
+    }
+
+    // Patch without state
+    // Graphul::patch("/", || async {});
+    fn patch<T, H>(path: &str, handler: H) -> Graphul
+    where
+        H: Handler<T, ()>,
+        T: 'static,
+    {
+        use http::Methods;
+
+        let mut app = Graphul::new();
+        app.patch(path, handler);
+        app
+    }
+
+    // Patch with state
+    // Graphul::Patch(my_state, "/", || async {});
+    fn Patch<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    where
+        H: Handler<T, S>,
+        T: 'static,
+        S: Clone + Send + Sync + 'static,
+    {
+        use http::Methods;
+
+        let mut app: Graphul<S> = Graphul::share_state(state);
+        app.patch(path, handler);
+        app
+    }
+
+    // Options without state
+    // Graphul::options("/", || async {});
+    fn options<T, H>(path: &str, handler: H) -> Graphul
+    where
+        H: Handler<T, ()>,
+        T: 'static,
+    {
+        use http::Methods;
+
+        let mut app = Graphul::new();
+        app.options(path, handler);
+        app
+    }
+
+    // Options with state
+    // Graphul::Options(my_state, "/", || async {});
+    fn Options<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    where
+        H: Handler<T, S>,
+        T: 'static,
+        S: Clone + Send + Sync + 'static,
+    {
+        use http::Methods;
+
+        let mut app: Graphul<S> = Graphul::share_state(state);
+        app.options(path, handler);
+        app
+    }
+
+    // Trace without state
+    // Graphul::trace("/", || async {});
+    fn trace<T, H>(path: &str, handler: H) -> Graphul
+    where
+        H: Handler<T, ()>,
+        T: 'static,
+    {
+        use http::Methods;
+
+        let mut app = Graphul::new();
+        app.trace(path, handler);
+        app
+    }
+
+    // Trace with state
+    // Graphul::Trace(my_state, "/", || async {});
+    fn Trace<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    where
+        H: Handler<T, S>,
+        T: 'static,
+        S: Clone + Send + Sync + 'static,
+    {
+        use http::Methods;
+
+        let mut app: Graphul<S> = Graphul::share_state(state);
+        app.trace(path, handler);
+        app
+    }
+
+    // Head without state
+    // Graphul::head("/", || async {});
+    fn head<T, H>(path: &str, handler: H) -> Graphul
+    where
+        H: Handler<T, ()>,
+        T: 'static,
+    {
+        use http::Methods;
+
+        let mut app = Graphul::new();
+        app.head(path, handler);
+        app
+    }
+
+    // Head with state
+    // Graphul::Head(my_state, "/", || async {});
+    fn Head<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    where
+        H: Handler<T, S>,
+        T: 'static,
+        S: Clone + Send + Sync + 'static,
+    {
+        use http::Methods;
+
+        let mut app: Graphul<S> = Graphul::share_state(state);
+        app.head(path, handler);
+        app
     }
 }
 
