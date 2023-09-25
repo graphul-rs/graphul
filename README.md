@@ -372,6 +372,26 @@ async fn main() {
 - [Example Multiple Routers](https://github.com/graphul-rs/graphul/tree/main/examples/multiple-routers)
 
 ```rust
+use graphul::{http::Methods, Graphul};
+
+#[tokio::main]
+async fn main() {
+    let mut app = Graphul::new();
+
+    app.get("/", || async { "Home" });
+
+    // you can use: Graphul::post, Graphul::put, Graphul::delete, Graphul::patch
+    let route_get = Graphul::get("/hello", || async { "Hello, World 👋!" });
+
+    // you can also use the `route` variable to add the route to the app
+    app.add_router(route_get);
+
+    app.run("127.0.0.1:8000").await;
+```
+
+#### 💡 Graphul::router
+
+```rust
 use graphul::{
     Req,
     middleware::{self, Next},
