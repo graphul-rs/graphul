@@ -15,6 +15,22 @@
 [![Discord](https://img.shields.io/discord/1096163462767444130?label=Discord)](https://discord.gg/3WCMgT3KCS)
 Join our Discord server to chat with others in the Graphul community!
 
+## Install
+
+#### Create a new project
+```
+$ cargo init hello-app
+
+$ cd hello-app
+```
+
+
+#### Add graphul dependency
+
+```
+$ cargo add graphul
+```
+
 ## ⚡️ Quickstart
 
 ```rust
