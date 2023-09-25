@@ -308,7 +308,7 @@ impl Graphul<()> {
 
     // Get with state
     // Graphul::Get(my_state, "/", || async {});
-    fn Get<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    fn state_get<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
     where
         H: Handler<T, S>,
         T: 'static,
@@ -337,7 +337,7 @@ impl Graphul<()> {
 
     // Post with state
     // Graphul::Post(my_state, "/", || async {});
-    fn Post<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    fn state_post<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
     where
         H: Handler<T, S>,
         T: 'static,
@@ -366,7 +366,7 @@ impl Graphul<()> {
 
     // Put with state
     // Graphul::Put(my_state, "/", || async {});
-    fn Put<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    fn state_put<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
     where
         H: Handler<T, S>,
         T: 'static,
@@ -395,7 +395,7 @@ impl Graphul<()> {
 
     // Delete with state
     // Graphul::Delete(my_state, "/", || async {});
-    fn Delete<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    fn state_delete<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
     where
         H: Handler<T, S>,
         T: 'static,
@@ -424,7 +424,7 @@ impl Graphul<()> {
 
     // Patch with state
     // Graphul::Patch(my_state, "/", || async {});
-    fn Patch<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    fn state_patch<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
     where
         H: Handler<T, S>,
         T: 'static,
@@ -453,7 +453,7 @@ impl Graphul<()> {
 
     // Options with state
     // Graphul::Options(my_state, "/", || async {});
-    fn Options<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    fn state_options<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
     where
         H: Handler<T, S>,
         T: 'static,
@@ -482,7 +482,7 @@ impl Graphul<()> {
 
     // Trace with state
     // Graphul::Trace(my_state, "/", || async {});
-    fn Trace<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    fn state_trace<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
     where
         H: Handler<T, S>,
         T: 'static,
@@ -511,7 +511,7 @@ impl Graphul<()> {
 
     // Head with state
     // Graphul::Head(my_state, "/", || async {});
-    fn Head<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
+    fn state_head<T, H, S>(state: S, path: &str, handler: H) -> Graphul<S>
     where
         H: Handler<T, S>,
         T: 'static,
